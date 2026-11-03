@@ -1,0 +1,435 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Network Load Balancer</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+        }
+
+        header {
+            background: #172033;
+            padding: 25px;
+            border-bottom: 1px solid #334155;
+        }
+
+        header h1 {
+            color: #38bdf8;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #94a3b8;
+        }
+
+        .container {
+            padding: 25px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .card h3 {
+            color: #94a3b8;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: #38bdf8;
+            font-size: 30px;
+        }
+
+        .section {
+            background: #1e293b;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            color: #38bdf8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            color: #94a3b8;
+        }
+
+        .healthy {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .unhealthy {
+            color: #f87171;
+            font-weight: bold;
+        }
+
+        select, button {
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: none;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        select {
+            background: #334155;
+            color: white;
+        }
+
+        button {
+            background: #0284c7;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .danger {
+            background: #dc2626;
+        }
+
+        .success {
+            background: #16a34a;
+        }
+
+        .bar-container {
+            background: #334155;
+            border-radius: 6px;
+            height: 22px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .bar {
+            height: 100%;
+            background: #38bdf8;
+            width: 0%;
+            transition: width 0.4s;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌐 Intelligent Network Load Balancer</h1>
+    <p>Traffic Management | Fault Tolerance | High Availability</p>
+</header>
+
+<div class="container">
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Requests</h3>
+            <h2 id="totalRequests">0</h2>
+        </div>
+
+        <div class="card">
+            <h3>Healthy Servers</h3>
+            <h2 id="healthyServers">0 / 3</h2>
+        </div>
+
+        <div class="card">
+            <h3>Load Balancing Strategy</h3>
+            <h2 id="strategyDisplay">Round Robin</h2>
+        </div>
+
+        <div class="card">
+            <h3>Active Connections</h3>
+            <h2 id="activeConnections">0</h2>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Backend Server Monitoring</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Server</th>
+                    <th>Status</th>
+                    <th>Requests</th>
+                    <th>Active Connections</th>
+                </tr>
+            </thead>
+
+            <tbody id="serverTable">
+                <tr>
+                    <td colspan="4">Loading server information...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Request Distribution</h2>
+        <div id="distribution"></div>
+    </div>
+
+    <div class="section">
+        <h2>Load Balancer Controls</h2>
+
+        <label for="strategy">Select Strategy:</label>
+
+        <select id="strategy" onchange="changeStrategy()">
+            <option value="round-robin">Round Robin</option>
+            <option value="least-connections">Least Connections</option>
+        </select>
+
+        <br><br>
+
+        <button onclick="sendRequest()">Send Test Request</button>
+
+        <button onclick="refreshDashboard()">Refresh Status</button>
+
+        <br><br>
+
+        <label for="serverSelect">Select Backend:</label>
+
+        <select id="serverSelect">
+            <option value="Backend-1">Backend-1</option>
+            <option value="Backend-2">Backend-2</option>
+            <option value="Backend-3">Backend-3</option>
+        </select>
+
+        <button class="danger" onclick="simulateFailure()">
+            Simulate Failure
+        </button>
+
+        <button class="success" onclick="restoreServer()">
+            Restore Server
+        </button>
+
+        <p id="message" style="margin-top:15px;"></p>
+    </div>
+
+    <div class="section">
+        <h2>Recent Activity</h2>
+        <div id="activity">No activity yet.</div>
+    </div>
+
+</div>
+
+<footer>
+    Intelligent Network Load Balancer |
+    CNIP Project | Fault Tolerant & Scalable
+</footer>
+
+<script>
+    let selectedStrategy = "round-robin";
+    let activities = [];
+
+    async function refreshDashboard() {
+        try {
+            const response = await fetch("/api/lb/servers");
+            const servers = await response.json();
+
+            let totalRequests = 0;
+            let healthyCount = 0;
+            let activeConnections = 0;
+
+            let table = "";
+            let distribution = "";
+
+            servers.forEach(server => {
+                totalRequests += server.requestCount;
+                activeConnections += server.activeConnections;
+
+                if (server.healthy) {
+                    healthyCount++;
+                }
+
+                const status = server.healthy
+                    ? '<span class="healthy">Healthy</span>'
+                    : '<span class="unhealthy">Unhealthy</span>';
+
+                table += `
+                    <tr>
+                        <td>${server.name}<br>${server.url}</td>
+                        <td>${status}</td>
+                        <td>${server.requestCount}</td>
+                        <td>${server.activeConnections}</td>
+                    </tr>
+                `;
+
+                const percentage = totalRequests === 0
+                    ? 0
+                    : (server.requestCount /
+                       Math.max(1, servers.reduce(
+                           (sum, item) => sum + item.requestCount, 0
+                       ))) * 100;
+
+                distribution += `
+                    <p>${server.name}: ${server.requestCount} requests</p>
+                    <div class="bar-container">
+                        <div class="bar" style="width:${percentage}%"></div>
+                    </div>
+                    <br>
+                `;
+            });
+
+            document.getElementById("serverTable").innerHTML = table;
+            document.getElementById("totalRequests").textContent = totalRequests;
+            document.getElementById("healthyServers").textContent =
+                healthyCount + " / " + servers.length;
+
+            document.getElementById("activeConnections").textContent =
+                activeConnections;
+
+            document.getElementById("strategyDisplay").textContent =
+                selectedStrategy === "round-robin"
+                    ? "Round Robin"
+                    : "Least Connections";
+
+            document.getElementById("distribution").innerHTML = distribution;
+
+        } catch (error) {
+            showMessage("Unable to connect to load balancer API.");
+        }
+    }
+
+    function changeStrategy() {
+        selectedStrategy = document.getElementById("strategy").value;
+        refreshDashboard();
+        showMessage("Strategy changed to " + selectedStrategy);
+    }
+
+    async function sendRequest() {
+        try {
+            const response = await fetch(
+                "/api/lb/hello?strategy=" + selectedStrategy
+            );
+
+            const data = await response.json();
+
+            addActivity("Request sent using " + selectedStrategy);
+
+            showMessage("Request completed successfully.");
+
+            refreshDashboard();
+
+        } catch (error) {
+            showMessage("Request failed. Check backend health.");
+        }
+    }
+
+    async function simulateFailure() {
+        const server = document.getElementById("serverSelect").value;
+
+        try {
+            await fetch(
+                "/api/lb/servers/" + server + "/simulate?healthy=false",
+                { method: "POST" }
+            );
+
+            showMessage(server + " failure simulated.");
+
+            addActivity(server + " failure simulated");
+
+            refreshDashboard();
+
+        } catch (error) {
+            showMessage("Unable to simulate failure.");
+        }
+    }
+
+    async function restoreServer() {
+        const server = document.getElementById("serverSelect").value;
+
+        try {
+            await fetch(
+                "/api/lb/servers/" + server + "/simulate?healthy=true",
+                { method: "POST" }
+            );
+
+            showMessage(server + " restored successfully.");
+
+            addActivity(server + " restored");
+
+            refreshDashboard();
+
+        } catch (error) {
+            showMessage("Unable to restore server.");
+        }
+    }
+
+    function showMessage(message) {
+        document.getElementById("message").textContent = message;
+    }
+
+    function addActivity(message) {
+        activities.unshift(new Date().toLocaleTimeString() + " - " + message);
+
+        activities = activities.slice(0, 5);
+
+        document.getElementById("activity").innerHTML =
+            activities.map(item => "<p>" + item + "</p>").join("");
+    }
+
+    refreshDashboard();
+
+    setInterval(refreshDashboard, 5000);
+</script>
+
+</body>
+</html>
