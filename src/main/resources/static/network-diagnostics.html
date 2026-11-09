@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +8,10 @@
 <title>Network Diagnostics</title>
 
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -16,7 +20,9 @@ body {
     padding: 30px;
 }
 
-h1 { color: #38bdf8; }
+h1 {
+    color: #38bdf8;
+}
 
 .container {
     max-width: 1000px;
@@ -34,10 +40,12 @@ h1 { color: #38bdf8; }
 input {
     padding: 12px;
     width: 60%;
+    max-width: 100%;
     background: #26354d;
     border: 1px solid #40516b;
     color: white;
     border-radius: 6px;
+    margin: 5px 0;
 }
 
 button {
@@ -63,10 +71,31 @@ button:hover {
     overflow-wrap: anywhere;
 }
 
-.success { color: #22c983; }
-.failure { color: #f05260; }
+.success {
+    color: #22c983;
+}
 
-a { color: #38bdf8; }
+.failure {
+    color: #f05260;
+}
+
+a {
+    color: #38bdf8;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+    }
+
+    input {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+    }
+}
 </style>
 </head>
 
@@ -75,44 +104,74 @@ a { color: #38bdf8; }
 <div class="container">
 
 <h1>Network Diagnostics</h1>
+
 <p>Network connectivity, DNS resolution, and Internet protocol testing.</p>
 
+<!-- DNS Lookup -->
 <div class="card">
-<h2>DNS Lookup</h2>
+    <h2>DNS Lookup</h2>
 
-<input id="dnsHost" placeholder="Enter domain (google.com)">
+    <input id="dnsHost" placeholder="Enter domain (google.com)">
 
-<button onclick="dnsLookup()">Lookup DNS</button>
+    <button onclick="dnsLookup()">Lookup DNS</button>
 
-<div id="dnsResult" class="result">
-DNS results will appear here.
+    <div id="dnsResult" class="result">
+        DNS results will appear here.
+    </div>
 </div>
-</div>
 
+<!-- HTTP Connectivity -->
 <div class="card">
-<h2>Ping / HTTP Connectivity Test</h2>
+    <h2>Ping / HTTP Connectivity Test</h2>
 
-<input id="pingHost" placeholder="Enter domain (google.com)">
+    <input id="pingHost" placeholder="Enter domain (google.com)">
 
-<button onclick="pingTest()">Test Connectivity</button>
+    <button onclick="pingTest()">Test Connectivity</button>
 
-<div id="pingResult" class="result">
-Connectivity results will appear here.
+    <div id="pingResult" class="result">
+        Connectivity results will appear here.
+    </div>
 </div>
-</div>
 
+<!-- TCP Port Checker -->
 <div class="card">
-<h2>Dashboard Navigation</h2>
+    <h2>TCP Port Checker</h2>
 
-<a href="/">Return to Load Balancer Dashboard</a>
+    <input
+        type="text"
+        id="tcpHost"
+        placeholder="Enter hostname (google.com)"
+    >
 
+    <input
+        type="number"
+        id="tcpPort"
+        placeholder="Enter port (443)"
+        value="443"
+        min="1"
+        max="65535"
+    >
+
+    <button onclick="checkTcpPort()">Check TCP Port</button>
+
+    <div id="tcpResult" class="result">
+        TCP port checking results will appear here.
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="card">
+    <h2>Dashboard Navigation</h2>
+
+    <a href="/">Return to Load Balancer Dashboard</a>
 </div>
 
 </div>
 
 <script>
-async function dnsLookup() {
 
+// DNS Lookup
+async function dnsLookup() {
     const host = document.getElementById("dnsHost").value.trim();
     const result = document.getElementById("dnsResult");
 
@@ -121,7 +180,7 @@ async function dnsLookup() {
         return;
     }
 
-    result.textContent = "Performing DNS lookup...";
+    result.textContent = "Looking up DNS...";
 
     try {
         const response = await fetch(
@@ -133,17 +192,17 @@ async function dnsLookup() {
         result.textContent = JSON.stringify(data, null, 2);
 
     } catch (error) {
-        result.textContent = "DNS lookup failed: " + error.message;
+        result.textContent = "DNS lookup failed.";
     }
 }
 
+// HTTP Connectivity Test
 async function pingTest() {
-
     const host = document.getElementById("pingHost").value.trim();
     const result = document.getElementById("pingResult");
 
     if (!host) {
-        result.textContent = "Please enter a domain.";
+        result.textContent = "Please enter a hostname.";
         return;
     }
 
@@ -159,9 +218,42 @@ async function pingTest() {
         result.textContent = JSON.stringify(data, null, 2);
 
     } catch (error) {
-        result.textContent = "Connectivity test failed: " + error.message;
+        result.textContent = "Connectivity test failed.";
     }
 }
+
+// TCP Port Checker
+async function checkTcpPort() {
+    const host = document.getElementById("tcpHost").value.trim();
+    const port = document.getElementById("tcpPort").value;
+    const result = document.getElementById("tcpResult");
+
+    if (!host || !port) {
+        result.textContent = "Please enter hostname and port.";
+        return;
+    }
+
+    if (port < 1 || port > 65535) {
+        result.textContent = "Please enter a valid port (1-65535).";
+        return;
+    }
+
+    result.textContent = "Checking TCP connection...";
+
+    try {
+        const response = await fetch(
+            `/api/network/tcp?host=${encodeURIComponent(host)}&port=${encodeURIComponent(port)}`
+        );
+
+        const data = await response.json();
+
+        result.textContent = JSON.stringify(data, null, 2);
+
+    } catch (error) {
+        result.textContent = "TCP connection test failed.";
+    }
+}
+
 </script>
 
 </body>
