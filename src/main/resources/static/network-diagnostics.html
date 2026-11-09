@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,6 +96,26 @@ a {
         width: 100%;
     }
 }
+.latency-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+#latencyChart {
+    width: 100%;
+    max-width: 600px;
+    height: 250px;
+    background: #111827;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+#latencyStatus {
+    font-weight: bold;
+    margin-top: 15px;
+}
 </style>
 </head>
 
@@ -176,7 +196,59 @@ a {
         Traceroute results will appear here.
     </div>
 </div>
+<div class="card">
+    <h2>Network Latency Monitor</h2>
 
+    <input
+        type="text"
+        id="latencyHost"
+        value="google.com"
+        placeholder="Enter hostname"
+    />
+
+    <button onclick="startLatencyMonitor()">Start Monitoring</button>
+    <button onclick="stopLatencyMonitor()">Stop</button>
+
+    <p id="latencyStatus">Status: Not Started</p>
+
+    <div class="latency-stats">
+        <p>Current: <span id="currentLatency">--</span> ms</p>
+        <p>Minimum: <span id="minLatency">--</span> ms</p>
+        <p>Maximum: <span id="maxLatency">--</span> ms</p>
+        <p>Average: <span id="avgLatency">--</span> ms</p>
+    </div>
+
+    <canvas id="latencyChart" width="600" height="250"></canvas>
+</div>
+
+<!-- Subnet Calculator -->
+<div class="card">
+    <h2>IPv4 Subnet Calculator</h2>
+
+    <input
+        type="text"
+        id="subnetIp"
+        value="192.168.1.10"
+        placeholder="Enter IPv4 address"
+    />
+
+    <input
+        type="number"
+        id="subnetCidr"
+        value="24"
+        min="0"
+        max="32"
+        placeholder="Enter CIDR (0-32)"
+    />
+
+    <button onclick="calculateSubnet()">
+        Calculate Subnet
+    </button>
+
+    <div id="subnetResult" class="result">
+        Subnet calculation results will appear here.
+    </div>
+</div>
 
 <!-- Navigation -->
 <div class="card">
@@ -356,7 +428,189 @@ async function runTraceroute() {
         result.textContent = "Traceroute request failed.";
     }
 }
+let latencyInterval = null;
+let latencyData = [];
+let latencyTimes = [];
 
+async function startLatencyMonitor() {
+    stopLatencyMonitor();
+
+    latencyData = [];
+    latencyTimes = [];
+
+    document.getElementById("latencyStatus").textContent =
+        "Status: Monitoring...";
+
+    await checkLatency();
+
+    latencyInterval = setInterval(checkLatency, 5000);
+}
+
+function stopLatencyMonitor() {
+    if (latencyInterval !== null) {
+        clearInterval(latencyInterval);
+        latencyInterval = null;
+    }
+
+    document.getElementById("latencyStatus").textContent =
+        "Status: Monitoring stopped";
+}
+
+async function checkLatency() {
+    const host = document.getElementById("latencyHost").value.trim();
+
+    if (!host) {
+        document.getElementById("latencyStatus").textContent =
+            "Please enter a hostname";
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `/api/network/ping?host=${encodeURIComponent(host)}`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.reachable) {
+            document.getElementById("latencyStatus").textContent =
+                "Status: Offline";
+            return;
+        }
+
+        const latency = Number(data.responseTimeMs);
+
+        if (!Number.isFinite(latency)) {
+            throw new Error("Invalid latency value");
+        }
+
+        latencyData.push(latency);
+        latencyTimes.push(new Date().toLocaleTimeString());
+
+        // Keep only the latest 20 results
+        if (latencyData.length > 20) {
+            latencyData.shift();
+            latencyTimes.shift();
+        }
+
+        document.getElementById("latencyStatus").textContent =
+            "Status: Online";
+
+        document.getElementById("currentLatency").textContent =
+            latency.toFixed(2);
+
+        document.getElementById("minLatency").textContent =
+            Math.min(...latencyData).toFixed(2);
+
+        document.getElementById("maxLatency").textContent =
+            Math.max(...latencyData).toFixed(2);
+
+        const average =
+            latencyData.reduce((sum, value) => sum + value, 0) /
+            latencyData.length;
+
+        document.getElementById("avgLatency").textContent =
+            average.toFixed(2);
+
+        drawLatencyChart();
+
+    } catch (error) {
+        document.getElementById("latencyStatus").textContent =
+            "Status: Error connecting to server";
+    }
+}
+
+function drawLatencyChart() {
+    const canvas = document.getElementById("latencyChart");
+    const ctx = canvas.getContext("2d");
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    ctx.clearRect(0, 0, width, height);
+
+    if (latencyData.length === 0) return;
+
+    const maxValue = Math.max(...latencyData, 10) * 1.2;
+
+    // Draw graph axes
+    ctx.beginPath();
+    ctx.moveTo(40, 10);
+    ctx.lineTo(40, height - 30);
+    ctx.lineTo(width - 10, height - 30);
+    ctx.strokeStyle = "#888";
+    ctx.stroke();
+
+    // Draw latency line
+    ctx.beginPath();
+
+    latencyData.forEach((value, index) => {
+        const x = 40 + index * ((width - 60) / 19);
+
+        const y =
+            height - 30 - (value / maxValue) * (height - 50);
+
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+
+    ctx.strokeStyle = "#00bcd4";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Display graph label
+    ctx.fillStyle = "#888";
+    ctx.font = "12px Arial";
+    ctx.fillText("Response Time (ms)", 45, 20);
+}
+
+async function calculateSubnet() {
+    const ip = document.getElementById("subnetIp").value.trim();
+    const cidr = document.getElementById("subnetCidr").value;
+    const result = document.getElementById("subnetResult");
+
+    if (!ip || cidr === "") {
+        result.textContent = "Please enter IP address and CIDR.";
+        return;
+    }
+
+    if (Number(cidr) < 0 || Number(cidr) > 32) {
+        result.textContent = "CIDR must be between 0 and 32.";
+        return;
+    }
+
+    result.textContent = "Calculating subnet...";
+
+    try {
+        const response = await fetch(
+            `/api/network/subnet?ip=${encodeURIComponent(ip)}&cidr=${encodeURIComponent(cidr)}`
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            result.textContent = "Error: " + data.error;
+            return;
+        }
+
+        result.innerHTML = `
+            <h3>Subnet Calculation Results</h3>
+            <p><strong>IP Address:</strong> ${data.ipAddress}</p>
+            <p><strong>CIDR:</strong> ${data.cidr}</p>
+            <p><strong>Subnet Mask:</strong> ${data.subnetMask}</p>
+            <p><strong>Network Address:</strong> ${data.networkAddress}</p>
+            <p><strong>Broadcast Address:</strong> ${data.broadcastAddress}</p>
+            <p><strong>Total IP Addresses:</strong> ${data.totalAddresses}</p>
+            <p><strong>Usable Host Addresses:</strong> ${data.usableHostAddresses}</p>
+        `;
+
+    } catch (error) {
+        result.textContent = "Subnet calculation failed. Check server connection.";
+    }
+}
 
 </script>
 
