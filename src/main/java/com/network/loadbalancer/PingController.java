@@ -2,11 +2,9 @@
 package com.network.loadbalancer;
 
 import org.springframework.web.bind.annotation.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/network")
@@ -18,9 +16,9 @@ public class PingController {
 
         Map<String, Object> result = new LinkedHashMap<>();
 
-        // Validate the hostname or IP address
         if (host == null || !host.matches(
                 "[a-zA-Z0-9.-]{1,253}")) {
+
             result.put("status", "Failed");
             result.put("message", "Invalid hostname");
             return result;
@@ -29,50 +27,25 @@ public class PingController {
         try {
             InetAddress address = InetAddress.getByName(host);
 
-            boolean windows = System.getProperty("os.name")
-                    .toLowerCase().contains("win");
+            long start = System.nanoTime();
 
-            List<String> command = windows
-                    ? Arrays.asList("ping", "-n", "4",
-                        "-w", "2000", address.getHostAddress())
-                    : Arrays.asList("ping", "-c", "4",
-                        "-W", "2", address.getHostAddress());
+            boolean reachable = address.isReachable(3000);
 
-            Process process = new ProcessBuilder(command)
-                    .redirectErrorStream(true)
-                    .start();
+            long end = System.nanoTime();
 
-            StringBuilder output = new StringBuilder();
-
-            try (BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(
-                            process.getInputStream()))) {
-
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    output.append(line).append("\n");
-                }
-            }
-
-            boolean finished = process.waitFor(
-                    12, TimeUnit.SECONDS);
-
-            if (!finished) {
-                process.destroyForcibly();
-                result.put("status", "Timeout");
-                result.put("message", "Ping timed out");
-                return result;
-            }
+            double latency = (end - start) / 1_000_000.0;
 
             result.put("host", host);
             result.put("ipAddress", address.getHostAddress());
-            result.put("pingOutput", output.toString());
+            result.put("reachable", reachable);
+            result.put("responseTimeMs",
+                    Math.round(latency * 100.0) / 100.0);
+
             result.put("status",
-                    process.exitValue() == 0
-                            ? "Success" : "Unreachable");
+                    reachable ? "Success" : "Unreachable");
 
         } catch (Exception e) {
+
             result.put("host", host);
             result.put("status", "Failed");
             result.put("message", e.getMessage());
