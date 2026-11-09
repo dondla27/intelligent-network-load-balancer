@@ -417,13 +417,15 @@ td {
             <small>Load Balancer</small>
         </div>
     </div>
-
-    <button class="nav-item active" data-page="dashboard">▦ Dashboard</button>
-    <button class="nav-item" data-page="servers">▤ Servers</button>
-    <button class="nav-item" data-page="health">♡ Health Check</button>
-    <button class="nav-item" data-page="simulation">⚙ Simulation</button>
-    <button class="nav-item" data-page="settings">⚙ Settings</button>
-    <button class="nav-item" data-page="logs">☷ Logs</button>
+   
+<button class="nav-item active" data-page="dashboard">▦ Dashboard</button>
+<button class="nav-item" data-page="servers">▤ Servers</button>
+<button class="nav-item" data-page="health">♡ Health Check</button>
+<button class="nav-item" data-page="simulation">⚙ Simulation</button>
+<button class="nav-item" data-page="analytics">📊 Traffic Analytics</button>
+<button class="nav-item" data-page="settings">⚙ Settings</button>
+<button class="nav-item" data-page="logs">☷ Logs</button>
+ 
 </aside>
 
 <main class="main">
@@ -582,6 +584,77 @@ td {
         <button onclick="refreshAll()">Refresh Data Now</button>
     </div>
 </section>
+
+<!-- TRAFFIC ANALYTICS PAGE -->
+<section id="analytics" class="page">
+
+    <div class="topbar">
+        <div>
+            <h1>Network Traffic Analytics</h1>
+            <div class="subtitle">
+                Live traffic statistics and backend performance
+            </div>
+        </div>
+
+        <button onclick="loadAnalytics()">Refresh Analytics</button>
+    </div>
+
+    <div class="metrics">
+
+        <div class="card">
+            <div class="metric-label">Total Requests</div>
+            <div class="metric-value" id="analyticsTotal">0</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Successful Requests</div>
+            <div class="metric-value" id="analyticsSuccess">0</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Failed Requests</div>
+            <div class="metric-value" id="analyticsFailed">0</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Average Response Time</div>
+            <div class="metric-value" id="analyticsResponse">0 ms</div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h3>Backend Traffic Statistics</h3>
+
+        <div style="overflow-x:auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Backend</th>
+                        <th>Total Requests</th>
+                        <th>Successful</th>
+                        <th>Failed</th>
+                    </tr>
+                </thead>
+
+                <tbody id="analyticsTable">
+                    <tr>
+                        <td colspan="4">Loading analytics...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+        <h3>Traffic Summary</h3>
+        <p id="analyticsSummary">
+            Waiting for analytics data...
+        </p>
+    </div>
+
+</section>
+
 
 <section id="logs" class="page">
     <div class="card">
@@ -877,8 +950,15 @@ document.querySelectorAll(".nav-item").forEach(button => {
         document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
 
-        button.classList.add("active");
-        document.getElementById(button.dataset.page).classList.add("active");
+        
+button.classList.add("active");
+
+document.getElementById(button.dataset.page).classList.add("active");
+
+if (button.dataset.page === "analytics") {
+    loadAnalytics();
+}
+
     });
 });
 
@@ -888,6 +968,70 @@ document.getElementById("strategySelect").addEventListener("change", changeStrat
 refreshAll();
 addActivity("Dashboard initialized");
 setInterval(refreshAll, 3000);
+
+async function loadAnalytics() {
+
+    try {
+
+        const data = await apiFetch(`${API}/analytics`);
+
+        document.getElementById("analyticsTotal").textContent =
+            data.totalRequests ?? 0;
+
+        document.getElementById("analyticsSuccess").textContent =
+            data.successfulRequests ?? 0;
+
+        document.getElementById("analyticsFailed").textContent =
+            data.failedRequests ?? 0;
+
+        document.getElementById("analyticsResponse").textContent =
+            `${data.averageResponseTimeMs ?? 0} ms`;
+
+        const backendStats = data.backendStatistics || {};
+
+        const table = document.getElementById("analyticsTable");
+
+        const entries = Object.entries(backendStats);
+
+        if (entries.length === 0) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="4">No traffic recorded yet.</td>
+                </tr>
+            `;
+
+        } else {
+
+            table.innerHTML = entries.map(([name, stats]) => `
+                <tr>
+                    <td>${escapeHtml(name)}</td>
+                    <td>${stats.totalRequests ?? 0}</td>
+                    <td>${stats.successfulRequests ?? 0}</td>
+                    <td>${stats.failedRequests ?? 0}</td>
+                </tr>
+            `).join("");
+
+        }
+
+        document.getElementById("analyticsSummary").textContent =
+            `Your system has processed ${data.totalRequests ?? 0} requests, 
+            with ${data.successfulRequests ?? 0} successful requests 
+            and ${data.failedRequests ?? 0} failures.`;
+
+        showToast("Analytics updated successfully");
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("analyticsSummary").textContent =
+            "Unable to load analytics: " + error.message;
+
+    }
+
+}
+
 </script>
 </body>
 </html>
