@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Network Diagnostics</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b1220;
+    color: #e8eef8;
+    padding: 30px;
+}
+
+h1 { color: #38bdf8; }
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.card {
+    background: #172338;
+    padding: 25px;
+    margin: 20px 0;
+    border-radius: 12px;
+    border: 1px solid #293950;
+}
+
+input {
+    padding: 12px;
+    width: 60%;
+    background: #26354d;
+    border: 1px solid #40516b;
+    color: white;
+    border-radius: 6px;
+}
+
+button {
+    padding: 12px 20px;
+    background: #2585f5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:hover {
+    background: #1266c4;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    background: #101a2b;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.success { color: #22c983; }
+.failure { color: #f05260; }
+
+a { color: #38bdf8; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Network Diagnostics</h1>
+<p>Network connectivity, DNS resolution, and Internet protocol testing.</p>
+
+<div class="card">
+<h2>DNS Lookup</h2>
+
+<input id="dnsHost" placeholder="Enter domain (google.com)">
+
+<button onclick="dnsLookup()">Lookup DNS</button>
+
+<div id="dnsResult" class="result">
+DNS results will appear here.
+</div>
+</div>
+
+<div class="card">
+<h2>Ping / HTTP Connectivity Test</h2>
+
+<input id="pingHost" placeholder="Enter domain (google.com)">
+
+<button onclick="pingTest()">Test Connectivity</button>
+
+<div id="pingResult" class="result">
+Connectivity results will appear here.
+</div>
+</div>
+
+<div class="card">
+<h2>Dashboard Navigation</h2>
+
+<a href="/">Return to Load Balancer Dashboard</a>
+
+</div>
+
+</div>
+
+<script>
+async function dnsLookup() {
+
+    const host = document.getElementById("dnsHost").value.trim();
+    const result = document.getElementById("dnsResult");
+
+    if (!host) {
+        result.textContent = "Please enter a domain.";
+        return;
+    }
+
+    result.textContent = "Performing DNS lookup...";
+
+    try {
+        const response = await fetch(
+            `/api/network/dns?domain=${encodeURIComponent(host)}`
+        );
+
+        const data = await response.json();
+
+        result.textContent = JSON.stringify(data, null, 2);
+
+    } catch (error) {
+        result.textContent = "DNS lookup failed: " + error.message;
+    }
+}
+
+async function pingTest() {
+
+    const host = document.getElementById("pingHost").value.trim();
+    const result = document.getElementById("pingResult");
+
+    if (!host) {
+        result.textContent = "Please enter a domain.";
+        return;
+    }
+
+    result.textContent = "Testing connectivity...";
+
+    try {
+        const response = await fetch(
+            `/api/network/ping?host=${encodeURIComponent(host)}`
+        );
+
+        const data = await response.json();
+
+        result.textContent = JSON.stringify(data, null, 2);
+
+    } catch (error) {
+        result.textContent = "Connectivity test failed: " + error.message;
+    }
+}
+</script>
+
+</body>
+</html>
