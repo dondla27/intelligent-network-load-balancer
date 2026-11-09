@@ -159,6 +159,25 @@ a {
     </div>
 </div>
 
+<div class="card">
+    <h2>Traceroute / Network Route Analysis</h2>
+
+    <input
+        type="text"
+        id="traceHost"
+        placeholder="Enter hostname (google.com)"
+    >
+
+    <button onclick="runTraceroute()">
+        Trace Route
+    </button>
+
+    <div id="traceResult" class="result">
+        Traceroute results will appear here.
+    </div>
+</div>
+
+
 <!-- Navigation -->
 <div class="card">
     <h2>Dashboard Navigation</h2>
@@ -253,6 +272,91 @@ async function checkTcpPort() {
         result.textContent = "TCP connection test failed.";
     }
 }
+
+async function runTraceroute() {
+    const host = document.getElementById("traceHost").value.trim();
+    const result = document.getElementById("traceResult");
+
+    if (!host) {
+        result.textContent = "Please enter a hostname.";
+        return;
+    }
+
+    result.textContent = "Tracing network route...";
+
+    try {
+        const response = await fetch(
+            `/api/network/traceroute?host=${encodeURIComponent(host)}`
+        );
+
+        const data = await response.json();
+
+        if (!data.hops || data.hops.length === 0) {
+            result.textContent = data.message || data.status;
+            return;
+        }
+
+        const hopLines = data.hops.filter(line =>
+            /^\s*\d+\s+/.test(line)
+        );
+
+        let html = `
+            <h3>Traceroute Results</h3>
+            <p><strong>Host:</strong> ${host}</p>
+            <p><strong>Status:</strong> ${data.status}</p>
+
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding:10px; text-align:left;">Hop</th>
+                        <th style="padding:10px; text-align:left;">Network Details</th>
+                        <th style="padding:10px; text-align:left;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        hopLines.forEach(line => {
+            const match = line.match(/^\s*(\d+)\s+(.*)$/);
+
+            if (!match) return;
+
+            const hopNumber = match[1];
+            const details = match[2];
+
+            const status = details.includes("*")
+                ? "No response"
+                : "Responded";
+
+            html += `
+                <tr>
+                    <td style="padding:10px; border-bottom:1px solid #293950;">
+                        ${hopNumber}
+                    </td>
+
+                    <td style="padding:10px; border-bottom:1px solid #293950;">
+                        ${details.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                    </td>
+
+                    <td style="padding:10px; border-bottom:1px solid #293950;">
+                        ${status}
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
+                </tbody>
+            </table>
+        `;
+
+        result.innerHTML = html;
+
+    } catch (error) {
+        result.textContent = "Traceroute request failed.";
+    }
+}
+
 
 </script>
 
