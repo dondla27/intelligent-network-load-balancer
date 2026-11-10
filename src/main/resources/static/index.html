@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,409 +8,411 @@
 
 <style>
 :root {
-    --bg: #0b1220;
-    --panel: #151f32;
-    --panel2: #1b2940;
-    --border: #293950;
-    --blue: #2585f5;
-    --cyan: #39c8e8;
-    --green: #22c983;
-    --red: #f05260;
-    --yellow: #f5a623;
-    --text: #e8eef8;
-    --muted: #8b9bb5;
+    --bg:#0b1220;
+    --panel:#151f32;
+    --panel2:#1b2940;
+    --border:#293950;
+    --blue:#2585f5;
+    --cyan:#39c8e8;
+    --green:#22c983;
+    --red:#f05260;
+    --yellow:#f5a623;
+    --text:#e8eef8;
+    --muted:#8b9bb5;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing:border-box; }
 
 body {
-    margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    margin:0;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
 }
 
-button, select {
-    font: inherit;
-    cursor: pointer;
-}
+button,select { font:inherit; cursor:pointer; }
 
 button {
-    border: 0;
-    border-radius: 7px;
-    padding: 10px 14px;
-    color: white;
-    background: var(--blue);
-    transition: .2s;
+    border:0;
+    border-radius:7px;
+    padding:10px 14px;
+    color:white;
+    background:var(--blue);
+    transition:.2s;
 }
 
-button:hover { filter: brightness(1.15); }
-button:disabled { opacity: .5; cursor: not-allowed; }
+button:hover { filter:brightness(1.15); }
+button:disabled { opacity:.5; cursor:not-allowed; }
 
-.green-btn { background: #16895e; }
-.red-btn { background: #d84452; }
-.gray-btn { background: #34445e; }
-.yellow-btn { background: #a76b13; }
+.green-btn { background:#16895e; }
+.red-btn { background:#d84452; }
+.gray-btn { background:#34445e; }
+.yellow-btn { background:#a76b13; }
 
 select {
-    background: #24334b;
-    color: white;
-    border: 1px solid #40516b;
-    padding: 9px;
-    border-radius: 6px;
+    background:#24334b;
+    color:white;
+    border:1px solid #40516b;
+    padding:9px;
+    border-radius:6px;
 }
 
 .layout {
-    display: flex;
-    min-height: 100vh;
+    display:flex;
+    min-height:100vh;
 }
 
 .sidebar {
-    width: 215px;
-    background: #101a2b;
-    border-right: 1px solid var(--border);
-    padding: 22px 14px;
-    flex-shrink: 0;
+    width:230px;
+    background:#101a2b;
+    border-right:1px solid var(--border);
+    padding:22px 14px;
+    flex-shrink:0;
 }
 
 .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 5px 30px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 5px 25px;
 }
 
 .brand-icon {
-    font-size: 30px;
-    color: var(--cyan);
+    font-size:30px;
+    color:var(--cyan);
 }
 
 .brand h2 {
-    font-size: 16px;
-    margin: 0;
+    font-size:16px;
+    margin:0;
 }
 
 .brand small {
-    color: var(--muted);
-    font-size: 11px;
+    color:var(--muted);
+    font-size:11px;
 }
 
 .nav-item {
-    display: block;
-    width: 100%;
-    text-align: left;
-    background: transparent;
-    color: #9aabc4;
-    margin: 5px 0;
-    padding: 13px;
-    border-radius: 7px;
+    display:block;
+    width:100%;
+    text-align:left;
+    background:transparent;
+    color:#9aabc4;
+    margin:5px 0;
+    padding:12px;
+    border-radius:7px;
 }
 
-.nav-item.active,
-.nav-item:hover {
-    background: var(--blue);
-    color: white;
+.nav-item.active,.nav-item:hover {
+    background:var(--blue);
+    color:white;
+}
+
+.nav-heading {
+    color:#7186a4;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    padding:15px 12px 5px;
 }
 
 .main {
-    flex: 1;
-    min-width: 0;
-    padding: 25px;
+    flex:1;
+    min-width:0;
+    padding:25px;
 }
 
 .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-bottom: 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
 }
 
 .topbar h1 {
-    margin: 0;
-    font-size: 25px;
+    margin:0;
+    font-size:25px;
 }
 
 .subtitle {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 6px;
+    color:var(--muted);
+    font-size:13px;
+    margin-top:6px;
 }
 
 .system-status {
-    background: #12352d;
-    color: #4be0a0;
-    border: 1px solid #1e654e;
-    padding: 9px 13px;
-    border-radius: 25px;
-    font-size: 12px;
+    background:#12352d;
+    color:#4be0a0;
+    border:1px solid #1e654e;
+    padding:9px 13px;
+    border-radius:25px;
+    font-size:12px;
 }
 
 .metrics {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:15px;
+    margin-bottom:20px;
 }
 
 .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 19px;
-    min-width: 0;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:19px;
+    min-width:0;
 }
 
 .metric-label {
-    color: #a5b5cc;
-    font-size: 13px;
+    color:#a5b5cc;
+    font-size:13px;
 }
 
 .metric-value {
-    font-size: 28px;
-    font-weight: 700;
-    margin: 12px 0 5px;
-    color: var(--cyan);
-    overflow-wrap: anywhere;
+    font-size:28px;
+    font-weight:700;
+    margin:12px 0 5px;
+    color:var(--cyan);
+    overflow-wrap:anywhere;
 }
 
 .metric-note {
-    font-size: 11px;
-    color: var(--muted);
+    font-size:11px;
+    color:var(--muted);
 }
 
 .content-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.35fr;
-    gap: 18px;
-    margin-bottom: 18px;
+    display:grid;
+    grid-template-columns:1fr 1.35fr;
+    gap:18px;
+    margin-bottom:18px;
 }
 
 .card h3 {
-    margin: 0 0 18px;
-    font-size: 16px;
+    margin:0 0 18px;
+    font-size:16px;
 }
 
 .distribution {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 25px;
-    flex-wrap: wrap;
-    min-height: 230px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+    min-height:230px;
 }
 
 .donut {
-    width: 165px;
-    height: 165px;
-    border-radius: 50%;
-    background: conic-gradient(#2585f5 0 33%, #22c983 33% 66%, #f5a623 66% 100%);
-    position: relative;
-    display: grid;
-    place-items: center;
+    width:165px;
+    height:165px;
+    border-radius:50%;
+    background:conic-gradient(#2585f5 0 33%,#22c983 33% 66%,#f5a623 66% 100%);
+    position:relative;
+    display:grid;
+    place-items:center;
 }
 
 .donut::before {
-    content: "";
-    position: absolute;
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    background: var(--panel);
+    content:"";
+    position:absolute;
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:var(--panel);
 }
 
 .donut-center {
-    position: relative;
-    text-align: center;
+    position:relative;
+    text-align:center;
 }
 
 .donut-center strong {
-    display: block;
-    font-size: 23px;
+    display:block;
+    font-size:23px;
 }
 
 .donut-center small {
-    color: var(--muted);
-    font-size: 10px;
+    color:var(--muted);
+    font-size:10px;
 }
 
 .legend {
-    display: grid;
-    gap: 12px;
-    font-size: 12px;
+    display:grid;
+    gap:12px;
+    font-size:12px;
 }
 
 .legend-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 .dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    display: inline-block;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    display:inline-block;
 }
 
-.blue { background: #2585f5; }
-.green { background: #22c983; }
-.orange { background: #f5a623; }
-
 table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
 }
 
 th {
-    color: #8fa1ba;
-    text-align: left;
-    padding: 12px 8px;
-    border-bottom: 1px solid var(--border);
+    color:#8fa1ba;
+    text-align:left;
+    padding:12px 8px;
+    border-bottom:1px solid var(--border);
 }
 
 td {
-    padding: 13px 8px;
-    border-bottom: 1px solid #26344a;
+    padding:13px 8px;
+    border-bottom:1px solid #26344a;
 }
 
-.server-name {
-    font-weight: 600;
-}
+.server-name { font-weight:600; }
 
 .server-url {
-    display: block;
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 4px;
+    display:block;
+    font-size:10px;
+    color:var(--muted);
+    margin-top:4px;
 }
 
 .status {
-    border-radius: 20px;
-    padding: 5px 10px;
-    font-size: 10px;
-    background: #123e31;
-    color: #48dfa0;
+    border-radius:20px;
+    padding:5px 10px;
+    font-size:10px;
+    background:#123e31;
+    color:#48dfa0;
+    display:inline-block;
+    margin:3px;
 }
 
 .status.unhealthy {
-    background: #49232b;
-    color: #ff8792;
-}
-
-.progress {
-    background: #26354d;
-    height: 7px;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-top: 7px;
-}
-
-.progress span {
-    display: block;
-    height: 100%;
-    background: var(--blue);
-    width: 0;
-    transition: width .3s;
+    background:#49232b;
+    color:#ff8792;
 }
 
 .bottom-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
 }
 
 .control-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 12px 0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:12px 0;
 }
 
 .control-row label {
-    font-size: 12px;
-    color: #a5b5cc;
+    font-size:12px;
+    color:#a5b5cc;
 }
 
 .activity-list {
-    display: grid;
-    gap: 12px;
-    max-height: 250px;
-    overflow: auto;
+    display:grid;
+    gap:12px;
+    max-height:250px;
+    overflow:auto;
 }
 
 .activity {
-    font-size: 12px;
-    display: flex;
-    gap: 9px;
-    align-items: flex-start;
-    color: #c5d0e1;
+    font-size:12px;
+    display:flex;
+    gap:9px;
+    align-items:flex-start;
+    color:#c5d0e1;
 }
 
 .activity-time {
-    color: var(--muted);
-    font-size: 10px;
-    min-width: 55px;
+    color:var(--muted);
+    font-size:10px;
+    min-width:55px;
 }
 
 .activity-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    margin-top: 4px;
-    flex-shrink: 0;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    margin-top:4px;
+    flex-shrink:0;
 }
 
 .footer {
-    text-align: center;
-    color: #7789a5;
-    font-size: 11px;
-    padding: 22px;
+    text-align:center;
+    color:#7789a5;
+    font-size:11px;
+    padding:22px;
 }
 
-.page { display: none; }
-.page.active { display: block; }
+.page { display:none; }
+.page.active { display:block; }
 
 .toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #20334d;
-    border: 1px solid #3b5270;
-    border-radius: 8px;
-    padding: 14px 18px;
-    display: none;
-    z-index: 100;
-    max-width: 90%;
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#20334d;
+    border:1px solid #3b5270;
+    border-radius:8px;
+    padding:14px 18px;
+    display:none;
+    z-index:100;
+    max-width:90%;
 }
 
-@media(max-width: 1050px) {
-    .metrics { grid-template-columns: repeat(2, 1fr); }
-    .content-grid, .bottom-grid { grid-template-columns: 1fr; }
+.diagnostics-frame {
+    width:100%;
+    min-height:1300px;
+    border:0;
+    display:block;
+    background:var(--bg);
 }
 
-@media(max-width: 650px) {
-    .layout { display: block; }
-    .sidebar { width: 100%; padding: 10px; }
-    .brand { padding-bottom: 10px; }
-    .nav-item { width: auto; display: inline-block; padding: 9px; }
-    .main { padding: 14px; }
-    .metrics { grid-template-columns: 1fr 1fr; gap: 8px; }
-    .metric-value { font-size: 22px; }
-    .card { padding: 13px; }
-    table { font-size: 10px; }
-    th, td { padding: 8px 4px; }
+@media(max-width:1050px) {
+    .metrics { grid-template-columns:repeat(2,1fr); }
+    .content-grid,.bottom-grid { grid-template-columns:1fr; }
+}
+
+@media(max-width:650px) {
+    .layout { display:block; }
+    .sidebar { width:100%; padding:10px; }
+    .brand { padding-bottom:10px; }
+    .nav-item {
+        width:auto;
+        display:inline-block;
+        padding:9px;
+        font-size:12px;
+    }
+    .nav-heading { padding:10px; }
+    .main { padding:14px; }
+    .metrics { grid-template-columns:1fr 1fr; gap:8px; }
+    .metric-value { font-size:22px; }
+    .card { padding:13px; }
+    table { font-size:10px; }
+    th,td { padding:8px 4px; }
+    .diagnostics-frame { min-height:1600px; }
 }
 </style>
 </head>
 
 <body>
+
 <div class="layout">
 
+<!-- SIDEBAR -->
 <aside class="sidebar">
+
     <div class="brand">
         <span class="brand-icon">◈</span>
         <div>
@@ -417,186 +420,278 @@ td {
             <small>Load Balancer</small>
         </div>
     </div>
-   
-<button class="nav-item active" data-page="dashboard">▦ Dashboard</button>
-<button class="nav-item" data-page="servers">▤ Servers</button>
-<button class="nav-item" data-page="health">♡ Health Check</button>
-<button class="nav-item" data-page="simulation">⚙ Simulation</button>
-<button class="nav-item" data-page="analytics">📊 Traffic Analytics</button>
-<button class="nav-item" data-page="settings">⚙ Settings</button>
-<button class="nav-item" data-page="logs">☷ Logs</button>
- 
+
+    <button class="nav-item active" data-page="dashboard">▦ Dashboard</button>
+    <button class="nav-item" data-page="servers">▤ Servers</button>
+    <button class="nav-item" data-page="health">♡ Health Check</button>
+    <button class="nav-item" data-page="simulation">⚙ Simulation</button>
+    <button class="nav-item" data-page="analytics">📊 Traffic Analytics</button>
+
+    <div class="nav-heading">Network Tools</div>
+
+    <button class="nav-item" data-page="diagnostics">🌐 Network Diagnostics</button>
+
+    <div class="nav-heading">System</div>
+
+    <button class="nav-item" data-page="settings">⚙ Settings</button>
+    <button class="nav-item" data-page="logs">☷ Logs</button>
+
 </aside>
 
+<!-- MAIN CONTENT -->
 <main class="main">
 
 <header class="topbar">
     <div>
         <h1>Intelligent Network Load Balancer</h1>
-        <div class="subtitle">Traffic Management | Fault Tolerance | High Availability</div>
+        <div class="subtitle">
+            Traffic Management | Fault Tolerance | High Availability
+        </div>
     </div>
-    <div class="system-status" id="systemStatus">● Connecting...</div>
+
+    <div class="system-status" id="systemStatus">
+        ● Connecting...
+    </div>
 </header>
 
-<!-- DASHBOARD -->
+<!-- 1. DASHBOARD -->
 <section id="dashboard" class="page active">
 
-<div class="metrics">
-    <div class="card">
-        <div class="metric-label">Total Requests</div>
-        <div class="metric-value" id="totalRequests">0</div>
-        <div class="metric-note">Requests handled by backends</div>
+    <div class="metrics">
+
+        <div class="card">
+            <div class="metric-label">Total Requests</div>
+            <div class="metric-value" id="totalRequests">0</div>
+            <div class="metric-note">Requests handled by backends</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Healthy Servers</div>
+            <div class="metric-value" id="healthyServers">0 / 3</div>
+            <div class="metric-note" id="healthPercent">Checking server health</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Load Balancing Strategy</div>
+            <div class="metric-value" id="strategyDisplay" style="font-size:22px">
+                Round Robin
+            </div>
+            <div class="metric-note">Current algorithm</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Avg Response</div>
+            <div class="metric-value" id="avgResponse">-- ms</div>
+            <div class="metric-note">Measured by dashboard</div>
+        </div>
+
     </div>
 
-    <div class="card">
-        <div class="metric-label">Healthy Servers</div>
-        <div class="metric-value" id="healthyServers">0 / 3</div>
-        <div class="metric-note" id="healthPercent">Checking server health</div>
-    </div>
+    <div class="content-grid">
 
-    <div class="card">
-        <div class="metric-label">Load Balancing Strategy</div>
-        <div class="metric-value" id="strategyDisplay" style="font-size:22px">Round Robin</div>
-        <div class="metric-note">Current algorithm</div>
-    </div>
+        <div class="card">
+            <h3>▥ Request Distribution</h3>
 
-    <div class="card">
-        <div class="metric-label">Avg Response</div>
-        <div class="metric-value" id="avgResponse">-- ms</div>
-        <div class="metric-note">Measured by dashboard</div>
-    </div>
-</div>
+            <div class="distribution">
 
-<div class="content-grid">
+                <div class="donut" id="donut">
+                    <div class="donut-center">
+                        <strong id="donutTotal">0</strong>
+                        <small>Total Requests</small>
+                    </div>
+                </div>
 
-<div class="card">
-    <h3>▥ Request Distribution</h3>
-    <div class="distribution">
-        <div class="donut" id="donut">
-            <div class="donut-center">
-                <strong id="donutTotal">0</strong>
-                <small>Total Requests</small>
+                <div class="legend" id="legend"></div>
+
             </div>
         </div>
-        <div class="legend" id="legend"></div>
-    </div>
-</div>
 
-<div class="card">
-    <h3>▤ Backend Server Monitoring</h3>
-    <div style="overflow-x:auto">
-    <table>
-        <thead>
-            <tr>
-                <th>Server</th>
-                <th>Status</th>
-                <th>Requests</th>
-                <th>Active Connections</th>
-            </tr>
-        </thead>
-        <tbody id="serverTable"></tbody>
-    </table>
-    </div>
-</div>
+        <div class="card">
+            <h3>▤ Backend Server Monitoring</h3>
 
-</div>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Server</th>
+                            <th>Status</th>
+                            <th>Requests</th>
+                            <th>Active Connections</th>
+                        </tr>
+                    </thead>
+                    <tbody id="serverTable"></tbody>
+                </table>
+            </div>
+        </div>
 
-<div class="bottom-grid">
-
-<div class="card">
-    <h3>⚙ Quick Controls</h3>
-
-    <div class="control-row">
-        <label>Load Balancing Strategy:</label>
-        <select id="strategySelect">
-            <option value="round-robin">Round Robin</option>
-            <option value="least-connections">Least Connections</option>
-        </select>
-        <button onclick="changeStrategy()">Apply</button>
     </div>
 
-    <div class="control-row">
-        <button onclick="sendRequest()">➤ Send Request</button>
-        <button class="red-btn" onclick="simulateFailure()">⚠ Simulate Failure</button>
-        <button class="green-btn" onclick="restoreServer()">↻ Restore Server</button>
-        <button class="gray-btn" onclick="refreshAll()">Refresh Status</button>
+    <div class="bottom-grid">
+
+        <div class="card">
+            <h3>⚙ Quick Controls</h3>
+
+            <div class="control-row">
+                <label>Load Balancing Strategy:</label>
+
+                <select id="strategySelect">
+                    <option value="round-robin">Round Robin</option>
+                    <option value="least-connections">Least Connections</option>
+                </select>
+
+                <button onclick="changeStrategy()">Apply</button>
+            </div>
+
+            <div class="control-row">
+                <button onclick="sendRequest()">➤ Send Request</button>
+                <button class="red-btn" onclick="simulateFailure()">⚠ Simulate Failure</button>
+                <button class="green-btn" onclick="restoreServer()">↻ Restore Server</button>
+                <button class="gray-btn" onclick="refreshAll()">Refresh Status</button>
+            </div>
+
+            <div class="control-row">
+                <label>Target Server:</label>
+
+                <select id="serverSelect">
+                    <option value="Backend-1">Backend-1</option>
+                    <option value="Backend-2">Backend-2</option>
+                    <option value="Backend-3">Backend-3</option>
+                </select>
+            </div>
+
+            <div class="metric-note" id="requestResult">
+                Ready to send requests.
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>
+                ◷ Recent Activity
+
+                <button class="gray-btn"
+                    style="float:right;padding:5px 9px"
+                    onclick="clearActivity()">
+                    Clear
+                </button>
+            </h3>
+
+            <div class="activity-list" id="activityList"></div>
+        </div>
+
     </div>
 
-    <div class="control-row">
-        <label>Target Server:</label>
-        <select id="serverSelect">
-            <option value="Backend-1">Backend-1</option>
-            <option value="Backend-2">Backend-2</option>
-            <option value="Backend-3">Backend-3</option>
-        </select>
-    </div>
-
-    <div class="metric-note" id="requestResult">Ready to send requests.</div>
-</div>
-
-<div class="card">
-    <h3>◷ Recent Activity <button class="gray-btn" style="float:right;padding:5px 9px" onclick="clearActivity()">Clear</button></h3>
-    <div class="activity-list" id="activityList"></div>
-</div>
-
-</div>
 </section>
 
-<!-- OTHER PAGES -->
+<!-- 2. BACKEND SERVER MANAGEMENT -->
 <section id="servers" class="page">
+
     <div class="card">
         <h3>All Backend Servers</h3>
-        <p class="subtitle">Live server health and request metrics.</p>
+
+        <p class="subtitle">
+            Live server health and request metrics.
+        </p>
+
         <div id="serversDetails"></div>
     </div>
+
 </section>
 
+<!-- 3. SERVER HEALTH MONITORING -->
 <section id="health" class="page">
+
     <div class="card">
         <h3>Health Check</h3>
+
         <p>Check the current health of all backend servers.</p>
+
         <button onclick="runHealthCheck()">Run Health Check</button>
+
         <div id="healthResult" style="margin-top:20px"></div>
     </div>
+
 </section>
 
+<!-- FAILURE SIMULATION -->
 <section id="simulation" class="page">
+
     <div class="card">
         <h3>Backend Failure Simulation</h3>
+
         <p>Choose a backend and simulate a failure or restore it.</p>
+
         <div class="control-row">
+
             <select id="simulationServer">
                 <option value="Backend-1">Backend-1</option>
                 <option value="Backend-2">Backend-2</option>
                 <option value="Backend-3">Backend-3</option>
             </select>
-            <button class="red-btn" onclick="simulateFailure('simulationServer')">Simulate Failure</button>
-            <button class="green-btn" onclick="restoreServer('simulationServer')">Restore Server</button>
+
+            <button class="red-btn"
+                onclick="simulateFailure('simulationServer')">
+                Simulate Failure
+            </button>
+
+            <button class="green-btn"
+                onclick="restoreServer('simulationServer')">
+                Restore Server
+            </button>
+
         </div>
     </div>
+
 </section>
 
-<section id="settings" class="page">
+<!-- 4 TO 10. NETWORK DIAGNOSTICS -->
+<section id="diagnostics" class="page">
+
     <div class="card">
-        <h3>Settings</h3>
-        <p>Automatic dashboard refresh interval: 3 seconds.</p>
-        <p>Backend API: <code>/api/lb</code></p>
-        <button onclick="refreshAll()">Refresh Data Now</button>
+        <h3>🌐 Network Diagnostics Dashboard</h3>
+
+        <p class="subtitle">
+            Network troubleshooting, connectivity testing and IP analysis.
+        </p>
+
+        <div>
+            <span class="status">DNS Lookup</span>
+            <span class="status">HTTP Connectivity</span>
+            <span class="status">TCP Port Checker</span>
+            <span class="status">Traceroute</span>
+            <span class="status">Network Latency Monitor</span>
+            <span class="status">Subnet Calculator</span>
+        </div>
     </div>
+
+    <div class="card" style="margin-top:18px;padding:0;overflow:hidden">
+
+        <iframe
+            id="diagnosticsFrame"
+            class="diagnostics-frame"
+            src="/network-diagnostics.html"
+            title="Network Diagnostics Tools"
+            loading="lazy">
+        </iframe>
+
+    </div>
+
 </section>
 
-<!-- TRAFFIC ANALYTICS PAGE -->
+<!-- 11. TRAFFIC ANALYTICS -->
 <section id="analytics" class="page">
 
     <div class="topbar">
+
         <div>
             <h1>Network Traffic Analytics</h1>
+
             <div class="subtitle">
                 Live traffic statistics and backend performance
             </div>
         </div>
 
         <button onclick="loadAnalytics()">Refresh Analytics</button>
+
     </div>
 
     <div class="metrics">
@@ -624,9 +719,11 @@ td {
     </div>
 
     <div class="card">
+
         <h3>Backend Traffic Statistics</h3>
 
         <div style="overflow-x:auto">
+
             <table>
                 <thead>
                     <tr>
@@ -643,28 +740,54 @@ td {
                     </tr>
                 </tbody>
             </table>
+
         </div>
+
     </div>
 
     <div class="card" style="margin-top:18px">
+
         <h3>Traffic Summary</h3>
+
         <p id="analyticsSummary">
             Waiting for analytics data...
         </p>
+
     </div>
 
 </section>
 
+<!-- SETTINGS -->
+<section id="settings" class="page">
 
+    <div class="card">
+        <h3>Settings</h3>
+
+        <p>Automatic dashboard refresh interval: 3 seconds.</p>
+
+        <p>Backend API: <code>/api/lb</code></p>
+
+        <button onclick="refreshAll()">Refresh Data Now</button>
+    </div>
+
+</section>
+
+<!-- LOGS -->
 <section id="logs" class="page">
+
     <div class="card">
         <h3>Activity Logs</h3>
+
         <div id="allLogs" class="activity-list"></div>
     </div>
+
 </section>
 
 <footer class="footer">
-    Intelligent Network Load Balancer | Fault Tolerance | High Availability | Scalable
+    Intelligent Network Load Balancer |
+    Fault Tolerance |
+    High Availability |
+    Scalable
 </footer>
 
 </main>
@@ -679,55 +802,37 @@ let servers = [];
 let activityLogs = [];
 let responseTimes = [];
 let selectedStrategy = "round-robin";
-let totalDashboardRequests = 0;
 
-const colors = ["#2585f5", "#22c983", "#f5a623", "#b56cf5"];
+const colors = [
+    "#2585f5",
+    "#22c983",
+    "#f5a623",
+    "#b56cf5"
+];
 
 function showToast(message) {
     const toast = document.getElementById("toast");
+
     toast.textContent = message;
     toast.style.display = "block";
-    setTimeout(() => toast.style.display = "none", 3000);
-}
 
-function addActivity(message, color = "#39c8e8") {
-    const time = new Date().toLocaleTimeString();
-    activityLogs.unshift({time, message, color});
-
-    if (activityLogs.length > 100) activityLogs.pop();
-
-    renderActivity();
-}
-
-function renderActivity() {
-    const html = activityLogs.slice(0, 15).map(log => `
-        <div class="activity">
-            <span class="activity-dot" style="background:${log.color}"></span>
-            <span class="activity-time">${log.time}</span>
-            <span>${escapeHtml(log.message)}</span>
-        </div>
-    `).join("");
-
-    document.getElementById("activityList").innerHTML =
-        html || '<div class="subtitle">No activity yet.</div>';
-
-    document.getElementById("allLogs").innerHTML = activityLogs.map(log => `
-        <div class="activity">
-            <span class="activity-dot" style="background:${log.color}"></span>
-            <span class="activity-time">${log.time}</span>
-            <span>${escapeHtml(log.message)}</span>
-        </div>
-    `).join("");
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 3000);
 }
 
 function escapeHtml(value) {
     return String(value ?? "").replace(/[&<>"']/g, c => ({
-        "&":"&amp;", "<":"&lt;", ">":"&gt;",
-        '"':"&quot;", "'":"&#39;"
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
     }[c]));
 }
 
 async function apiFetch(url, options = {}) {
+
     const response = await fetch(url, options);
 
     if (!response.ok) {
@@ -744,39 +849,130 @@ async function apiFetch(url, options = {}) {
     }
 }
 
+/* ACTIVITY LOGS */
+
+function addActivity(message, color = "#39c8e8") {
+
+    const time = new Date().toLocaleTimeString();
+
+    activityLogs.unshift({
+        time,
+        message,
+        color
+    });
+
+    if (activityLogs.length > 100) {
+        activityLogs.pop();
+    }
+
+    renderActivity();
+}
+
+function renderActivity() {
+
+    const recentHTML = activityLogs.slice(0, 15).map(log => `
+        <div class="activity">
+            <span class="activity-dot"
+                style="background:${log.color}">
+            </span>
+
+            <span class="activity-time">
+                ${escapeHtml(log.time)}
+            </span>
+
+            <span>${escapeHtml(log.message)}</span>
+        </div>
+    `).join("");
+
+    document.getElementById("activityList").innerHTML =
+        recentHTML || '<div class="subtitle">No activity yet.</div>';
+
+    document.getElementById("allLogs").innerHTML =
+        activityLogs.map(log => `
+            <div class="activity">
+                <span class="activity-dot"
+                    style="background:${log.color}">
+                </span>
+
+                <span class="activity-time">
+                    ${escapeHtml(log.time)}
+                </span>
+
+                <span>${escapeHtml(log.message)}</span>
+            </div>
+        `).join("");
+}
+
+function clearActivity() {
+    activityLogs = [];
+    renderActivity();
+}
+
+/* REFRESH SERVER DATA */
+
 async function refreshAll() {
+
     try {
+
         const data = await apiFetch(`${API}/servers`);
+
         servers = Array.isArray(data) ? data : [];
 
         updateDashboard();
 
-        document.getElementById("systemStatus").textContent = "● System Online";
-        document.getElementById("systemStatus").style.color = "#4be0a0";
+        document.getElementById("systemStatus").textContent =
+            "● System Online";
+
+        document.getElementById("systemStatus").style.color =
+            "#4be0a0";
 
     } catch (error) {
-        document.getElementById("systemStatus").textContent = "● API Offline";
-        document.getElementById("systemStatus").style.color = "#ff8792";
 
-        console.error(error);
+        document.getElementById("systemStatus").textContent =
+            "● API Offline";
+
+        document.getElementById("systemStatus").style.color =
+            "#ff8792";
+
+        console.error("Server refresh error:", error);
     }
 }
 
+/* DASHBOARD UPDATE */
+
 function updateDashboard() {
-    const total = servers.reduce((sum, s) => sum + Number(s.requestCount || 0), 0);
-    const healthy = servers.filter(s => s.healthy).length;
+
+    const total = servers.reduce(
+        (sum, server) => sum + Number(server.requestCount || 0),
+        0
+    );
+
+    const healthy = servers.filter(
+        server => server.healthy
+    ).length;
 
     document.getElementById("totalRequests").textContent = total;
+
     document.getElementById("donutTotal").textContent = total;
-    document.getElementById("healthyServers").textContent = `${healthy} / ${servers.length}`;
+
+    document.getElementById("healthyServers").textContent =
+        `${healthy} / ${servers.length}`;
+
     document.getElementById("healthPercent").textContent =
-        servers.length ? `${Math.round(healthy / servers.length * 100)}% operational` : "No servers";
+        servers.length
+            ? `${Math.round(healthy / servers.length * 100)}% operational`
+            : "No servers";
 
     document.getElementById("strategyDisplay").textContent =
-        selectedStrategy === "least-connections" ? "Least Connections" : "Round Robin";
+        selectedStrategy === "least-connections"
+            ? "Least Connections"
+            : "Round Robin";
 
     const avg = responseTimes.length
-        ? Math.round(responseTimes.reduce((a,b) => a+b, 0) / responseTimes.length)
+        ? Math.round(
+            responseTimes.reduce((a,b) => a+b, 0) /
+            responseTimes.length
+        )
         : null;
 
     document.getElementById("avgResponse").textContent =
@@ -786,39 +982,69 @@ function updateDashboard() {
     renderDistribution();
 }
 
+/* SERVER TABLE */
+
 function renderServers() {
+
     const table = document.getElementById("serverTable");
 
     table.innerHTML = servers.map(server => {
+
         const healthy = Boolean(server.healthy);
         const count = Number(server.requestCount || 0);
         const connections = Number(server.activeConnections || 0);
 
         return `
-        <tr>
-            <td>
-                <span class="server-name">${escapeHtml(server.name)}</span>
-                <span class="server-url">${escapeHtml(server.url || "")}</span>
-            </td>
-            <td><span class="status ${healthy ? "" : "unhealthy"}">
-                ${healthy ? "Healthy" : "Unhealthy"}
-            </span></td>
-            <td>${count}</td>
-            <td>${connections}</td>
-        </tr>`;
+            <tr>
+                <td>
+                    <span class="server-name">
+                        ${escapeHtml(server.name)}
+                    </span>
+
+                    <span class="server-url">
+                        ${escapeHtml(server.url || "")}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="status ${healthy ? "" : "unhealthy"}">
+                        ${healthy ? "Healthy" : "Unhealthy"}
+                    </span>
+                </td>
+
+                <td>${count}</td>
+                <td>${connections}</td>
+            </tr>
+        `;
+
     }).join("");
 
     document.getElementById("serversDetails").innerHTML = `
         <div style="overflow-x:auto">
-        <table>
-            <thead><tr><th>Server</th><th>Status</th><th>Requests</th><th>Connections</th></tr></thead>
-            <tbody>${table.innerHTML}</tbody>
-        </table>
-        </div>`;
+            <table>
+                <thead>
+                    <tr>
+                        <th>Server</th>
+                        <th>Status</th>
+                        <th>Requests</th>
+                        <th>Connections</th>
+                    </tr>
+                </thead>
+
+                <tbody>${table.innerHTML}</tbody>
+            </table>
+        </div>
+    `;
 }
 
+/* REQUEST DISTRIBUTION */
+
 function renderDistribution() {
-    const total = servers.reduce((sum, s) => sum + Number(s.requestCount || 0), 0);
+
+    const total = servers.reduce(
+        (sum, server) => sum + Number(server.requestCount || 0),
+        0
+    );
 
     const legend = document.getElementById("legend");
 
@@ -828,12 +1054,22 @@ function renderDistribution() {
     }
 
     let start = 0;
+
     const segments = servers.map((server, i) => {
+
         const count = Number(server.requestCount || 0);
-        const percent = total ? count / total * 100 : 100 / servers.length;
+
+        const percent = total
+            ? count / total * 100
+            : 100 / servers.length;
+
         const end = start + percent;
-        const segment = `${colors[i % colors.length]} ${start}% ${end}%`;
+
+        const segment =
+            `${colors[i % colors.length]} ${start}% ${end}%`;
+
         start = end;
+
         return segment;
     });
 
@@ -841,139 +1077,191 @@ function renderDistribution() {
         `conic-gradient(${segments.join(",")})`;
 
     legend.innerHTML = servers.map((server, i) => {
+
         const count = Number(server.requestCount || 0);
-        const percent = total ? (count / total * 100).toFixed(1) : "0.0";
+
+        const percent = total
+            ? (count / total * 100).toFixed(1)
+            : "0.0";
 
         return `
-        <div class="legend-row">
-            <span class="dot" style="background:${colors[i % colors.length]}"></span>
-            ${escapeHtml(server.name)} — ${count} (${percent}%)
-        </div>`;
+            <div class="legend-row">
+                <span class="dot"
+                    style="background:${colors[i % colors.length]}">
+                </span>
+
+                ${escapeHtml(server.name)} —
+                ${count} (${percent}%)
+            </div>
+        `;
+
     }).join("");
 }
 
+/* SEND REQUEST */
+
 async function sendRequest() {
-    const buttonResult = document.getElementById("requestResult");
-    buttonResult.textContent = "Sending request...";
+
+    const resultElement =
+        document.getElementById("requestResult");
+
+    resultElement.textContent = "Sending request...";
 
     const start = performance.now();
 
     try {
-        const result = await apiFetch(`${API}/hello?strategy=${selectedStrategy}`);
+
+        const result = await apiFetch(
+            `${API}/hello?strategy=${selectedStrategy}`
+        );
 
         const duration = Math.round(performance.now() - start);
+
         responseTimes.push(duration);
 
-        if (responseTimes.length > 50) responseTimes.shift();
+        if (responseTimes.length > 50) {
+            responseTimes.shift();
+        }
 
-        totalDashboardRequests++;
+        resultElement.textContent =
+            `Request successful (${duration} ms): ` +
+            (typeof result === "string"
+                ? result
+                : JSON.stringify(result));
 
-        buttonResult.textContent =
-            `Request successful (${duration} ms): ${typeof result === "string" ? result : JSON.stringify(result)}`;
+        addActivity(
+            `Request completed in ${duration} ms`,
+            "#22c983"
+        );
 
-        addActivity(`Request completed in ${duration} ms`, "#22c983");
         await refreshAll();
 
     } catch (error) {
-        buttonResult.textContent = "Request failed: " + error.message;
-        addActivity("Request failed: " + error.message, "#f05260");
+
+        resultElement.textContent =
+            "Request failed: " + error.message;
+
+        addActivity(
+            "Request failed: " + error.message,
+            "#f05260"
+        );
+
         showToast("Request failed");
     }
 }
 
+/* LOAD BALANCING STRATEGY */
+
 async function changeStrategy() {
-    selectedStrategy = document.getElementById("strategySelect").value;
+
+    selectedStrategy =
+        document.getElementById("strategySelect").value;
+
     document.getElementById("strategyDisplay").textContent =
-        selectedStrategy === "least-connections" ? "Least Connections" : "Round Robin";
+        selectedStrategy === "least-connections"
+            ? "Least Connections"
+            : "Round Robin";
 
     addActivity("Strategy changed to " + selectedStrategy);
+
     showToast("Strategy selected: " + selectedStrategy);
 
     await refreshAll();
 }
 
+/* FAILURE SIMULATION */
+
 async function simulateFailure(selectId = "serverSelect") {
-    const serverName = document.getElementById(selectId).value;
+
+    const serverName =
+        document.getElementById(selectId).value;
 
     try {
-        await apiFetch(`${API}/servers/${encodeURIComponent(serverName)}/simulate?healthy=false`, {
-            method: "POST"
-        });
 
-        addActivity(`${serverName} failure simulated`, "#f05260");
+        await apiFetch(
+            `${API}/servers/${encodeURIComponent(serverName)}/simulate?healthy=false`,
+            { method:"POST" }
+        );
+
+        addActivity(
+            `${serverName} failure simulated`,
+            "#f05260"
+        );
+
         showToast(`${serverName} marked unhealthy`);
 
         await refreshAll();
+
     } catch (error) {
+
         showToast("Failure simulation error: " + error.message);
     }
 }
 
+/* RESTORE SERVER */
+
 async function restoreServer(selectId = "serverSelect") {
-    const serverName = document.getElementById(selectId).value;
+
+    const serverName =
+        document.getElementById(selectId).value;
 
     try {
-        await apiFetch(`${API}/servers/${encodeURIComponent(serverName)}/simulate?healthy=true`, {
-            method: "POST"
-        });
 
-        addActivity(`${serverName} restored`, "#22c983");
+        await apiFetch(
+            `${API}/servers/${encodeURIComponent(serverName)}/simulate?healthy=true`,
+            { method:"POST" }
+        );
+
+        addActivity(
+            `${serverName} restored`,
+            "#22c983"
+        );
+
         showToast(`${serverName} restored`);
 
         await refreshAll();
+
     } catch (error) {
+
         showToast("Restore error: " + error.message);
     }
 }
 
+/* HEALTH CHECK */
+
 async function runHealthCheck() {
+
     try {
-        const result = await apiFetch(`${API}/health-check`);
+
+        const result = await apiFetch(
+            `${API}/health-check`
+        );
 
         document.getElementById("healthResult").innerHTML =
-            `<pre style="white-space:pre-wrap">${escapeHtml(JSON.stringify(result, null, 2))}</pre>`;
+            `<pre style="white-space:pre-wrap;overflow:auto">${escapeHtml(
+                JSON.stringify(result, null, 2)
+            )}</pre>`;
 
         addActivity("Health check completed", "#22c983");
+
         await refreshAll();
+
     } catch (error) {
-        document.getElementById("healthResult").textContent = error.message;
+
+        document.getElementById("healthResult").textContent =
+            error.message;
     }
 }
 
-function clearActivity() {
-    activityLogs = [];
-    renderActivity();
-}
-
-document.querySelectorAll(".nav-item").forEach(button => {
-    button.addEventListener("click", () => {
-        document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-
-        
-button.classList.add("active");
-
-document.getElementById(button.dataset.page).classList.add("active");
-
-if (button.dataset.page === "analytics") {
-    loadAnalytics();
-}
-
-    });
-});
-
-document.getElementById("strategySelect").addEventListener("change", changeStrategy);
-
-// Initial load and automatic refresh
-refreshAll();
-addActivity("Dashboard initialized");
-setInterval(refreshAll, 3000);
+/* TRAFFIC ANALYTICS */
 
 async function loadAnalytics() {
 
     try {
 
-        const data = await apiFetch(`${API}/analytics`);
+        const data = await apiFetch(
+            `${API}/analytics`
+        );
 
         document.getElementById("analyticsTotal").textContent =
             data.totalRequests ?? 0;
@@ -987,11 +1275,14 @@ async function loadAnalytics() {
         document.getElementById("analyticsResponse").textContent =
             `${data.averageResponseTimeMs ?? 0} ms`;
 
-        const backendStats = data.backendStatistics || {};
+        const backendStats =
+            data.backendStatistics || {};
 
-        const table = document.getElementById("analyticsTable");
+        const table =
+            document.getElementById("analyticsTable");
 
-        const entries = Object.entries(backendStats);
+        const entries =
+            Object.entries(backendStats);
 
         if (entries.length === 0) {
 
@@ -1011,27 +1302,86 @@ async function loadAnalytics() {
                     <td>${stats.failedRequests ?? 0}</td>
                 </tr>
             `).join("");
-
         }
 
         document.getElementById("analyticsSummary").textContent =
-            `Your system has processed ${data.totalRequests ?? 0} requests, 
-            with ${data.successfulRequests ?? 0} successful requests 
-            and ${data.failedRequests ?? 0} failures.`;
-
-        showToast("Analytics updated successfully");
+            `Your system has processed ${data.totalRequests ?? 0} requests, ` +
+            `with ${data.successfulRequests ?? 0} successful requests ` +
+            `and ${data.failedRequests ?? 0} failures.`;
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Analytics error:", error);
 
         document.getElementById("analyticsSummary").textContent =
             "Unable to load analytics: " + error.message;
-
     }
-
 }
 
+/* NAVIGATION */
+
+document.querySelectorAll(".nav-item").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        document.querySelectorAll(".nav-item").forEach(item => {
+            item.classList.remove("active");
+        });
+
+        document.querySelectorAll(".page").forEach(page => {
+            page.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        const pageId = button.dataset.page;
+
+        const page = document.getElementById(pageId);
+
+        if (!page) {
+            console.error("Page not found:", pageId);
+            return;
+        }
+
+        page.classList.add("active");
+
+        if (pageId === "analytics") {
+            loadAnalytics();
+        }
+
+        if (pageId === "diagnostics") {
+            const frame = document.getElementById("diagnosticsFrame");
+
+            if (frame && !frame.dataset.loaded) {
+                frame.dataset.loaded = "true";
+                frame.src = "/network-diagnostics.html";
+            }
+        }
+
+        if (pageId === "servers" || pageId === "dashboard") {
+            refreshAll();
+        }
+
+        if (pageId === "health") {
+            refreshAll();
+        }
+
+    });
+
+});
+
+/* INITIALIZATION */
+
+document.getElementById("strategySelect")
+    .addEventListener("change", changeStrategy);
+
+refreshAll();
+
+addActivity("Dashboard initialized");
+
+setInterval(refreshAll, 3000);
+
 </script>
+
 </body>
 </html>
