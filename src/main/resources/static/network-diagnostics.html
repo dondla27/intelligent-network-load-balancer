@@ -1,266 +1,185 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Network Diagnostics</title>
-
+<title>Network Operations Center | Diagnostics</title>
 <style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b1220;
-    color: #e8eef8;
-    padding: 30px;
-}
-
-h1 {
-    color: #38bdf8;
-}
-
-.container {
-    max-width: 1000px;
-    margin: auto;
-}
-
-.card {
-    background: #172338;
-    padding: 25px;
-    margin: 20px 0;
-    border-radius: 12px;
-    border: 1px solid #293950;
-}
-
-input {
-    padding: 12px;
-    width: 60%;
-    max-width: 100%;
-    background: #26354d;
-    border: 1px solid #40516b;
-    color: white;
-    border-radius: 6px;
-    margin: 5px 0;
-}
-
-button {
-    padding: 12px 20px;
-    background: #2585f5;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin: 5px;
-}
-
-button:hover {
-    background: #1266c4;
-}
-
-.result {
-    margin-top: 20px;
-    padding: 15px;
-    background: #101a2b;
-    border-radius: 8px;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-
-.success {
-    color: #22c983;
-}
-
-.failure {
-    color: #f05260;
-}
-
-a {
-    color: #38bdf8;
-}
-
-@media (max-width: 600px) {
-    body {
-        padding: 15px;
-    }
-
-    input {
-        width: 100%;
-    }
-
-    button {
-        width: 100%;
-    }
-}
-.latency-stats {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin: 20px 0;
-}
-
-#latencyChart {
-    width: 100%;
-    max-width: 600px;
-    height: 250px;
-    background: #111827;
-    border-radius: 10px;
-    margin-top: 15px;
-}
-
-#latencyStatus {
-    font-weight: bold;
-    margin-top: 15px;
-}
+:root{--bg:#080e1b;--panel:#111c2e;--panel2:#0d1728;--line:#22334b;--text:#e7eef9;--muted:#8fa2bb;--blue:#38bdf8;--cyan:#22d3ee;--green:#34d399;--red:#fb7185;--amber:#fbbf24}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 80% 0%,#102342 0,transparent 32%),var(--bg);color:var(--text);font:14px Inter,Segoe UI,Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}
+.sidebar{background:#0b1424;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;padding:0 8px}
+.brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#0284c7,#22d3ee);display:grid;place-items:center;font-size:20px;font-weight:800;color:#031323}
+.brand strong{display:block;font-size:15px}.brand small{color:var(--muted);font-size:11px}
+.side-label{color:#647994;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:0 10px;margin-bottom:-12px}
+.tool-nav{display:grid;gap:7px}
+.tool-nav button{border:1px solid transparent;background:transparent;color:#a9bad0;text-align:left;padding:12px;border-radius:10px;display:flex;gap:11px;align-items:center;transition:.2s}
+.tool-nav button:hover,.tool-nav button.active{background:#14263d;border-color:#254765;color:#eaf7ff}
+.tool-nav button.active{box-shadow:inset 3px 0 var(--blue)}
+.tool-nav .ico{width:22px;text-align:center;font-size:17px}
+.sidebar-foot{margin-top:auto;border:1px solid var(--line);background:#101d30;border-radius:12px;padding:14px;color:var(--muted);font-size:12px;line-height:1.6}
+.sidebar-foot a{color:var(--blue);text-decoration:none}
+main{min-width:0;padding:28px clamp(16px,3vw,40px) 40px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:25px}
+.eyebrow{color:var(--cyan);font-size:10px;letter-spacing:1.8px;font-weight:800}
+h1{font-size:clamp(23px,3vw,30px);margin:6px 0}.sub{color:var(--muted);margin:0}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.live-pill{border:1px solid #1d5b4d;background:#0d2b29;color:#7ce7bf;padding:8px 11px;border-radius:30px;font-size:11px;font-weight:700}
+.top-link{color:#b9dfff;text-decoration:none;border:1px solid var(--line);padding:9px 12px;border-radius:9px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.metric,.panel,.workspace{background:linear-gradient(145deg,#132138,#0f1a2b);border:1px solid var(--line);border-radius:15px}
+.metric{padding:17px;position:relative;overflow:hidden}
+.metric:after{content:"";position:absolute;width:75px;height:75px;border-radius:50%;background:#38bdf8;opacity:.06;right:-20px;top:-25px}
+.metric-label{color:var(--muted);font-size:12px}.metric-value{font-size:25px;font-weight:750;margin:10px 0 4px}.metric-note{color:#7389a4;font-size:11px}
+.metric-value.blue{color:var(--blue)}.metric-value.green{color:var(--green)}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.85fr);gap:16px;align-items:start}
+.workspace{padding:22px;min-height:470px}
+.workspace-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+h2{font-size:17px;margin:0 0 6px}.muted{color:var(--muted)}
+.tool-section{display:none}.tool-section.active{display:block}
+.tool-intro{color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 20px}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input{background:#091425;border:1px solid #2b405c;color:var(--text);padding:12px 13px;border-radius:9px;min-width:0;flex:1;outline:none}
+input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #38bdf81a}
+.primary{background:linear-gradient(135deg,#0284c7,#0ea5e9);color:white;border:0;border-radius:9px;padding:12px 16px;font-weight:700}
+.primary:hover{filter:brightness(1.12)}
+.secondary{background:#1a2b43;color:#c8d9ed;border:1px solid #304763;border-radius:9px;padding:11px 14px}
+.result{margin-top:18px;padding:16px;background:#091425;border:1px solid #1f3048;border-radius:11px;min-height:100px;white-space:pre-wrap;overflow-wrap:anywhere;color:#b9c9dc;line-height:1.65}
+.result:empty:before{content:"Diagnostic output will appear here.";color:#627994}
+.result table{font-size:12px;color:var(--text)}
+.result th{color:#7dd3fc;background:#12243a}
+.result td,.result th{padding:9px;border-bottom:1px solid #25364d;text-align:left}
+.result h3{color:#8bdcff}
+.latency-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:16px 0}
+.latency-stats p{margin:0;background:#0a1628;border:1px solid #24364e;padding:12px;border-radius:9px;color:var(--muted);font-size:11px}
+.latency-stats span{display:block;color:var(--text);font-size:18px;font-weight:700;margin-top:7px}
+#latencyStatus{font-weight:700;color:var(--green);margin:14px 0}
+#latencyChart{width:100%;height:220px;background:#091425;border:1px solid #22344d;border-radius:10px;margin-top:12px}
+.side-column{display:grid;gap:16px}
+.panel{padding:18px}
+.panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.panel-title h2{margin:0;font-size:15px}
+.status-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #22334a}
+.status-row:last-child{border-bottom:0}
+.status-name{display:flex;gap:9px;align-items:center;color:#c5d4e7}
+.dot{width:8px;height:8px;border-radius:50%;background:#64748b}.dot.green{background:var(--green);box-shadow:0 0 10px #34d39966}
+.status-text{font-size:11px;color:var(--muted)}
+.activity-list{display:grid;gap:11px;max-height:220px;overflow:auto}
+.activity{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:#b9c9dc}
+.activity-icon{width:26px;height:26px;display:grid;place-items:center;background:#172b44;border-radius:8px;flex-shrink:0}
+.activity small{display:block;color:#7186a0;margin-top:3px}
+.empty{color:#7186a0;font-size:12px;line-height:1.6}
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.info-panel{padding:18px;background:#0e192a;border:1px solid var(--line);border-radius:14px}
+.info-panel p{color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:0}
+.badge{font-size:10px;border-radius:30px;padding:5px 8px;background:#172b43;color:#9acdf3}
+@media(max-width:1050px){.metrics{grid-template-columns:repeat(2,1fr)}.content-grid{grid-template-columns:1fr}.side-column{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{padding:14px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 4px}.tool-nav{display:flex;overflow-x:auto;padding-bottom:4px}.tool-nav button{white-space:nowrap;padding:10px}.side-label,.sidebar-foot{display:none}main{padding:20px 14px}.topbar{align-items:flex-start;flex-direction:column}.metrics{gap:9px}.metric{padding:13px}.metric-value{font-size:21px}.side-column,.bottom-grid{grid-template-columns:1fr}.workspace{padding:16px}.latency-stats{grid-template-columns:repeat(2,1fr)}.form-row{display:grid;grid-template-columns:1fr}.form-row input,.form-row button{width:100%}}
 </style>
 </head>
-
 <body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">N</div><div><strong>NetOps Center</strong><small>NETWORK DIAGNOSTICS</small></div></div>
+  <div class="side-label">DIAGNOSTIC TOOLS</div>
+  <nav class="tool-nav" aria-label="Diagnostic tools">
+    <button class="active" data-tool="dns"><span class="ico">⌕</span>DNS Lookup</button>
+    <button data-tool="http"><span class="ico">⇄</span>HTTP Connectivity</button>
+    <button data-tool="tcp"><span class="ico">⇥</span>TCP Port Checker</button>
+    <button data-tool="trace"><span class="ico">⌁</span>Traceroute</button>
+    <button data-tool="latency"><span class="ico">◷</span>Latency Monitor</button>
+    <button data-tool="subnet"><span class="ico">▦</span>Subnet Calculator</button>
+  </nav>
+  <div class="sidebar-foot">Centralized network testing and diagnostics.<br><a href="/">← Return to Load Balancer Dashboard</a></div>
+</aside>
 
-<div class="container">
+<main>
+  <header class="topbar">
+    <div><div class="eyebrow">NETWORK OPERATIONS / DIAGNOSTICS</div><h1>Network Diagnostics</h1><p class="sub">Monitor connectivity, inspect routes and troubleshoot network services.</p></div>
+    <div class="top-actions"><span class="live-pill">● DIAGNOSTICS READY</span><a class="top-link" href="/">Main Dashboard ↗</a></div>
+  </header>
 
-<h1>Network Diagnostics</h1>
+  <section class="metrics">
+    <div class="metric"><div class="metric-label">Diagnostic Checks</div><div class="metric-value blue" id="checksCount">0</div><div class="metric-note">Checks started in this session</div></div>
+    <div class="metric"><div class="metric-label">Successful Checks</div><div class="metric-value green" id="successCount">0</div><div class="metric-note">Based on returned responses</div></div>
+    <div class="metric"><div class="metric-label">Failed Checks</div><div class="metric-value" id="failedCount">0</div><div class="metric-note">Requests with errors or failures</div></div>
+    <div class="metric"><div class="metric-label">Last Activity</div><div class="metric-value" style="font-size:18px" id="lastActivity">--</div><div class="metric-note">Most recent diagnostic action</div></div>
+  </section>
 
-<p>Network connectivity, DNS resolution, and Internet protocol testing.</p>
+  <div class="content-grid">
+    <section class="workspace">
+      <div class="workspace-head"><div><h2 id="workspaceTitle">DNS Lookup</h2><div class="muted" style="font-size:12px">Run a diagnostic test against a target host or address.</div></div><span class="badge" id="toolBadge">DNS</span></div>
 
-<!-- DNS Lookup -->
-<div class="card">
-    <h2>DNS Lookup</h2>
+      <div class="tool-section active" id="tool-dns">
+        <p class="tool-intro">Resolve a domain name and inspect the DNS response returned by your backend.</p>
+        <div class="form-row"><input id="dnsHost" placeholder="Enter domain (google.com)" aria-label="DNS domain"><button class="primary" onclick="dnsLookup()">Lookup DNS →</button></div>
+        <div id="dnsResult" class="result">DNS results will appear here.</div>
+      </div>
 
-    <input id="dnsHost" placeholder="Enter domain (google.com)">
+      <div class="tool-section" id="tool-http">
+        <p class="tool-intro">Test whether a host is reachable through the connectivity endpoint.</p>
+        <div class="form-row"><input id="pingHost" placeholder="Enter domain (google.com)" aria-label="Host to test"><button class="primary" onclick="pingTest()">Test Connectivity →</button></div>
+        <div id="pingResult" class="result">Connectivity results will appear here.</div>
+      </div>
 
-    <button onclick="dnsLookup()">Lookup DNS</button>
+      <div class="tool-section" id="tool-tcp">
+        <p class="tool-intro">Check whether a TCP service port can be reached on the selected host.</p>
+        <div class="form-row"><input type="text" id="tcpHost" placeholder="Enter hostname (google.com)" aria-label="TCP hostname"><input type="number" id="tcpPort" placeholder="Port" value="443" min="1" max="65535" aria-label="TCP port"><button class="primary" onclick="checkTcpPort()">Check Port →</button></div>
+        <div id="tcpResult" class="result">TCP port checking results will appear here.</div>
+      </div>
 
-    <div id="dnsResult" class="result">
-        DNS results will appear here.
-    </div>
-</div>
+      <div class="tool-section" id="tool-trace">
+        <p class="tool-intro">Trace the network path to a destination and inspect individual hops.</p>
+        <div class="form-row"><input type="text" id="traceHost" placeholder="Enter hostname (google.com)" aria-label="Traceroute hostname"><button class="primary" onclick="runTraceroute()">Trace Route →</button></div>
+        <div id="traceResult" class="result">Traceroute results will appear here.</div>
+      </div>
 
-<!-- HTTP Connectivity -->
-<div class="card">
-    <h2>Ping / HTTP Connectivity Test</h2>
+      <div class="tool-section" id="tool-latency">
+        <p class="tool-intro">Continuously sample response time every five seconds and view the recent latency trend.</p>
+        <div class="form-row"><input type="text" id="latencyHost" value="google.com" placeholder="Enter hostname" aria-label="Latency hostname"><button class="primary" onclick="startLatencyMonitor()">Start Monitoring</button><button class="secondary" onclick="stopLatencyMonitor()">Stop</button></div>
+        <p id="latencyStatus">Status: Not Started</p>
+        <div class="latency-stats">
+          <p>Current<span><span id="currentLatency">--</span> ms</span></p><p>Minimum<span><span id="minLatency">--</span> ms</span></p><p>Maximum<span><span id="maxLatency">--</span> ms</span></p><p>Average<span><span id="avgLatency">--</span> ms</span></p>
+        </div>
+        <canvas id="latencyChart" width="600" height="250"></canvas>
+      </div>
 
-    <input id="pingHost" placeholder="Enter domain (google.com)">
+      <div class="tool-section" id="tool-subnet">
+        <p class="tool-intro">Calculate IPv4 network details using an address and CIDR prefix.</p>
+        <div class="form-row"><input type="text" id="subnetIp" value="192.168.1.10" placeholder="IPv4 address" aria-label="IPv4 address"><input type="number" id="subnetCidr" value="24" min="0" max="32" placeholder="CIDR (0–32)" aria-label="CIDR prefix"><button class="primary" onclick="calculateSubnet()">Calculate →</button></div>
+        <div id="subnetResult" class="result">Subnet calculation results will appear here.</div>
+      </div>
+    </section>
 
-    <button onclick="pingTest()">Test Connectivity</button>
+    <aside class="side-column">
+      <section class="panel">
+        <div class="panel-title"><h2>Service Overview</h2><span class="badge">LIVE SESSION</span></div>
+        <div class="status-row"><div class="status-name"><span class="dot"></span>DNS Lookup</div><span class="status-text" id="status-dns">Not tested</span></div>
+        <div class="status-row"><div class="status-name"><span class="dot"></span>HTTP Connectivity</div><span class="status-text" id="status-http">Not tested</span></div>
+        <div class="status-row"><div class="status-name"><span class="dot"></span>TCP Port</div><span class="status-text" id="status-tcp">Not tested</span></div>
+        <div class="status-row"><div class="status-name"><span class="dot"></span>Traceroute</div><span class="status-text" id="status-trace">Not tested</span></div>
+        <div class="status-row"><div class="status-name"><span class="dot"></span>Latency Monitor</div><span class="status-text" id="status-latency">Not started</span></div>
+        <div class="status-row"><div class="status-name"><span class="dot"></span>Subnet Calculator</div><span class="status-text" id="status-subnet">Not used</span></div>
+      </section>
+      <section class="panel">
+        <div class="panel-title"><h2>Recent Activity</h2><button class="secondary" style="padding:6px 9px;font-size:11px" onclick="clearActivity()">Clear</button></div>
+        <div class="activity-list" id="activityList"><div class="empty">No diagnostics run yet. Choose a tool and start your first check.</div></div>
+      </section>
+    </aside>
+  </div>
 
-    <div id="pingResult" class="result">
-        Connectivity results will appear here.
-    </div>
-</div>
-
-<!-- TCP Port Checker -->
-<div class="card">
-    <h2>TCP Port Checker</h2>
-
-    <input
-        type="text"
-        id="tcpHost"
-        placeholder="Enter hostname (google.com)"
-    >
-
-    <input
-        type="number"
-        id="tcpPort"
-        placeholder="Enter port (443)"
-        value="443"
-        min="1"
-        max="65535"
-    >
-
-    <button onclick="checkTcpPort()">Check TCP Port</button>
-
-    <div id="tcpResult" class="result">
-        TCP port checking results will appear here.
-    </div>
-</div>
-
-<div class="card">
-    <h2>Traceroute / Network Route Analysis</h2>
-
-    <input
-        type="text"
-        id="traceHost"
-        placeholder="Enter hostname (google.com)"
-    >
-
-    <button onclick="runTraceroute()">
-        Trace Route
-    </button>
-
-    <div id="traceResult" class="result">
-        Traceroute results will appear here.
-    </div>
-</div>
-<div class="card">
-    <h2>Network Latency Monitor</h2>
-
-    <input
-        type="text"
-        id="latencyHost"
-        value="google.com"
-        placeholder="Enter hostname"
-    />
-
-    <button onclick="startLatencyMonitor()">Start Monitoring</button>
-    <button onclick="stopLatencyMonitor()">Stop</button>
-
-    <p id="latencyStatus">Status: Not Started</p>
-
-    <div class="latency-stats">
-        <p>Current: <span id="currentLatency">--</span> ms</p>
-        <p>Minimum: <span id="minLatency">--</span> ms</p>
-        <p>Maximum: <span id="maxLatency">--</span> ms</p>
-        <p>Average: <span id="avgLatency">--</span> ms</p>
-    </div>
-
-    <canvas id="latencyChart" width="600" height="250"></canvas>
-</div>
-
-<!-- Subnet Calculator -->
-<div class="card">
-    <h2>IPv4 Subnet Calculator</h2>
-
-    <input
-        type="text"
-        id="subnetIp"
-        value="192.168.1.10"
-        placeholder="Enter IPv4 address"
-    />
-
-    <input
-        type="number"
-        id="subnetCidr"
-        value="24"
-        min="0"
-        max="32"
-        placeholder="Enter CIDR (0-32)"
-    />
-
-    <button onclick="calculateSubnet()">
-        Calculate Subnet
-    </button>
-
-    <div id="subnetResult" class="result">
-        Subnet calculation results will appear here.
-    </div>
-</div>
-
-<!-- Navigation -->
-<div class="card">
-    <h2>Dashboard Navigation</h2>
-
-    <a href="/">Return to Load Balancer Dashboard</a>
-</div>
-
+  <div class="bottom-grid">
+    <section class="info-panel"><h2>Network Troubleshooting</h2><p>Run DNS resolution first, then test host connectivity and TCP service ports. Use traceroute to inspect the route and latency monitoring to observe response-time changes.</p></section>
+    <section class="info-panel"><h2>About These Results</h2><p>Service indicators update after you run each diagnostic. They reflect the latest returned test result in this browser session, not a continuous external network health probe.</p></section>
+  </div>
+</main>
 </div>
 
 <script>
-
 // DNS Lookup
 async function dnsLookup() {
     const host = document.getElementById("dnsHost").value.trim();
@@ -281,6 +200,7 @@ async function dnsLookup() {
         const data = await response.json();
 
         result.textContent = JSON.stringify(data, null, 2);
+        addActivity("dns", response.ok && !data.error, data.status || data.message || "DNS response received");
 
     } catch (error) {
         result.textContent = "DNS lookup failed.";
@@ -307,6 +227,7 @@ async function pingTest() {
         const data = await response.json();
 
         result.textContent = JSON.stringify(data, null, 2);
+        addActivity("http", response.ok && (data.reachable !== false), data.status || data.message || "Connectivity response received");
 
     } catch (error) {
         result.textContent = "Connectivity test failed.";
@@ -339,6 +260,7 @@ async function checkTcpPort() {
         const data = await response.json();
 
         result.textContent = JSON.stringify(data, null, 2);
+        addActivity("tcp", response.ok && (data.open !== false) && (data.reachable !== false), data.status || data.message || "TCP response received");
 
     } catch (error) {
         result.textContent = "TCP connection test failed.";
@@ -365,6 +287,7 @@ async function runTraceroute() {
 
         if (!data.hops || data.hops.length === 0) {
             result.textContent = data.message || data.status;
+            addActivity("trace", response.ok && data.status !== "Failed", data.status || "No hops returned");
             return;
         }
 
@@ -423,6 +346,7 @@ async function runTraceroute() {
         `;
 
         result.innerHTML = html;
+        addActivity("trace", response.ok && data.status !== "Failed", data.status || "Route trace completed");
 
     } catch (error) {
         result.textContent = "Traceroute request failed.";
@@ -440,6 +364,7 @@ async function startLatencyMonitor() {
 
     document.getElementById("latencyStatus").textContent =
         "Status: Monitoring...";
+    document.getElementById("status-latency").textContent = "Monitoring";
 
     await checkLatency();
 
@@ -454,6 +379,7 @@ function stopLatencyMonitor() {
 
     document.getElementById("latencyStatus").textContent =
         "Status: Monitoring stopped";
+    document.getElementById("status-latency").textContent = "Stopped";
 }
 
 async function checkLatency() {
@@ -475,6 +401,7 @@ async function checkLatency() {
         if (!response.ok || !data.reachable) {
             document.getElementById("latencyStatus").textContent =
                 "Status: Offline";
+            markLatencyStatus(false);
             return;
         }
 
@@ -495,6 +422,7 @@ async function checkLatency() {
 
         document.getElementById("latencyStatus").textContent =
             "Status: Online";
+        markLatencyStatus(true);
 
         document.getElementById("currentLatency").textContent =
             latency.toFixed(2);
@@ -513,10 +441,12 @@ async function checkLatency() {
             average.toFixed(2);
 
         drawLatencyChart();
+        if (latencyData.length === 1) addActivity("latency", true, "Latency monitoring started");
 
     } catch (error) {
         document.getElementById("latencyStatus").textContent =
             "Status: Error connecting to server";
+        markLatencyStatus(false);
     }
 }
 
@@ -593,6 +523,7 @@ async function calculateSubnet() {
 
         if (!data.success) {
             result.textContent = "Error: " + data.error;
+            addActivity("subnet", false, data.error);
             return;
         }
 
@@ -606,13 +537,52 @@ async function calculateSubnet() {
             <p><strong>Total IP Addresses:</strong> ${data.totalAddresses}</p>
             <p><strong>Usable Host Addresses:</strong> ${data.usableHostAddresses}</p>
         `;
+        addActivity("subnet", response.ok, "Subnet calculated");
 
     } catch (error) {
+        addActivity("subnet", false, "Subnet calculation failed");
         result.textContent = "Subnet calculation failed. Check server connection.";
     }
 }
-
+// NOC interface interactions and session activity tracking.
+const diagnosticLabels = {dns:"DNS Lookup",http:"HTTP Connectivity",tcp:"TCP Port Checker",trace:"Traceroute",latency:"Latency Monitor",subnet:"Subnet Calculator"};
+let diagnosticStats = {total:0,success:0,failed:0};
+function selectTool(tool){
+  document.querySelectorAll(".tool-nav button").forEach(b=>b.classList.toggle("active",b.dataset.tool===tool));
+  document.querySelectorAll(".tool-section").forEach(s=>s.classList.toggle("active",s.id==="tool-"+tool));
+  document.getElementById("workspaceTitle").textContent=diagnosticLabels[tool];
+  document.getElementById("toolBadge").textContent=tool.toUpperCase();
+}
+document.querySelectorAll(".tool-nav button").forEach(button=>button.addEventListener("click",()=>selectTool(button.dataset.tool)));
+function addActivity(tool, success, detail){
+  diagnosticStats.total++;
+  if(success) diagnosticStats.success++; else diagnosticStats.failed++;
+  document.getElementById("checksCount").textContent=diagnosticStats.total;
+  document.getElementById("successCount").textContent=diagnosticStats.success;
+  document.getElementById("failedCount").textContent=diagnosticStats.failed;
+  document.getElementById("lastActivity").textContent=new Date().toLocaleTimeString();
+  const status=document.getElementById("status-"+tool);
+  if(status) status.textContent=success?"Completed":"Issue detected";
+  const dot=status?.parentElement.querySelector(".dot");
+  if(dot) dot.className="dot "+(success?"green":"");
+  const list=document.getElementById("activityList");
+  const empty=list.querySelector(".empty"); if(empty) empty.remove();
+  const item=document.createElement("div"); item.className="activity";
+  const icon=document.createElement("div"); icon.className="activity-icon"; icon.textContent=success?"✓":"!";
+  const body=document.createElement("div"); body.textContent=diagnosticLabels[tool]+" — "+(detail|| (success?"Completed":"Failed"));
+  const time=document.createElement("small"); time.textContent=new Date().toLocaleTimeString(); body.appendChild(time);
+  item.append(icon,body); list.prepend(item);
+  while(list.children.length>8) list.lastElementChild.remove();
+}
+function clearActivity(){
+  document.getElementById("activityList").innerHTML='<div class="empty">Activity history cleared.</div>';
+}
+function markLatencyStatus(isOnline){
+  const status=document.getElementById("status-latency");
+  if(status) status.textContent=isOnline?"Online":"Offline";
+  const dot=status?.parentElement.querySelector(".dot");
+  if(dot) dot.className="dot "+(isOnline?"green":"");
+}
 </script>
-
 </body>
 </html>
