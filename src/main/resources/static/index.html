@@ -668,7 +668,7 @@ td {
         <iframe
             id="diagnosticsFrame"
             class="diagnostics-frame"
-            src="/network-diagnostics.html"
+            src="/network-diagnostics.html?v=4"
             title="Network Diagnostics Tools"
             loading="lazy">
         </iframe>
@@ -1350,13 +1350,13 @@ document.querySelectorAll(".nav-item").forEach(button => {
         }
 
         if (pageId === "diagnostics") {
-            const frame = document.getElementById("diagnosticsFrame");
+    const frame = document.getElementById("diagnosticsFrame");
 
-            if (frame && !frame.dataset.loaded) {
-                frame.dataset.loaded = "true";
-                frame.src = "/network-diagnostics.html";
-            }
-        }
+    if (frame && !frame.dataset.loaded) {
+        frame.dataset.loaded = "true";
+        frame.src = "/network-diagnostics.html?v=4";
+    }
+}
 
         if (pageId === "servers" || pageId === "dashboard") {
             refreshAll();
