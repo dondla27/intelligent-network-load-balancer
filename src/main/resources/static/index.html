@@ -404,6 +404,7 @@ td {
     .diagnostics-frame { min-height:1600px; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -517,6 +518,8 @@ td {
                             <th>Status</th>
                             <th>Requests</th>
                             <th>Active Connections</th>
+                            <th>Health Latency</th>
+                            <th>Last Checked</th>
                         </tr>
                     </thead>
                     <tbody id="serverTable"></tbody>
@@ -597,30 +600,191 @@ td {
 
 </section>
 
-<!-- 3. SERVER HEALTH MONITORING -->
+
+<!-- 3. ADVANCED SERVER HEALTH MONITORING -->
 <section id="health" class="page">
 
-    <div class="card">
-        <h3>Health Check</h3>
+    <div class="topbar">
+        <div>
+            <h1>Server Health Monitoring</h1>
+            <div class="subtitle">
+                Real-time backend availability, health status and response latency
+            </div>
+        </div>
 
-        <p>Check the current health of all backend servers.</p>
+        <button onclick="runHealthCheck()">
+            ↻ Run Health Check
+        </button>
+    </div>
 
-        <button onclick="runHealthCheck()">Run Health Check</button>
+    <!-- HEALTH SUMMARY -->
+    <div class="metrics">
 
-        <div id="healthResult" style="margin-top:20px"></div>
+        <div class="card">
+            <div class="metric-label">Total Backends</div>
+            <div class="metric-value" id="healthTotal">0</div>
+            <div class="metric-note">Registered backend servers</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Healthy Servers</div>
+            <div class="metric-value" id="healthHealthy" style="color:#22c983">
+                0
+            </div>
+            <div class="metric-note">Operational backends</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Unhealthy Servers</div>
+            <div class="metric-value" id="healthUnhealthy" style="color:#f05260">
+                0
+            </div>
+            <div class="metric-note">Unavailable backends</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">System Availability</div>
+            <div class="metric-value" id="healthAvailability">0%</div>
+            <div class="metric-note">Overall backend availability</div>
+        </div>
+
+    </div>
+
+    <!-- OVERALL STATUS -->
+    <div class="card" style="margin-top:18px">
+
+        <h3>◈ Overall System Health</h3>
+
+        <div id="overallHealth"
+             style="display:flex;align-items:center;gap:14px;
+                    padding:18px;background:#101a2b;
+                    border:1px solid #293950;border-radius:10px">
+
+            <span style="font-size:30px;color:#22c983">●</span>
+
+            <div>
+                <strong id="overallHealthText">Waiting for server data...</strong>
+
+                <div class="metric-note" id="overallHealthDescription">
+                    Backend health information will appear here.
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- INDIVIDUAL BACKEND HEALTH -->
+    <div class="card" style="margin-top:18px">
+
+        <h3>▤ Individual Backend Health</h3>
+
+        <p class="subtitle">
+            Monitor each backend server's availability and performance.
+        </p>
+
+        <div id="healthServerCards"
+             style="display:grid;
+                    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+                    gap:15px">
+
+            <div class="metric-note">
+                Loading backend health information...
+            </div>
+
+        </div>
+
+    </div>
+
+<!-- BACKEND RESPONSE TIME CHART -->
+<div class="card" style="margin-top:18px">
+
+    <h3>▥ Backend Response Time Trends</h3>
+
+    <p class="subtitle">
+        Monitor backend health-check latency over time.
+    </p>
+
+    <div style="height:300px;position:relative">
+        <canvas id="healthLatencyChart"></canvas>
+    </div>
+
+</div>
+
+
+    <!-- HEALTH CHECK RESULT -->
+    <div class="card" style="margin-top:18px">
+
+        <h3>◷ Health Check Activity</h3>
+
+        <div id="healthResult" class="metric-note">
+            No manual health check performed yet.
+        </div>
+
     </div>
 
 </section>
 
+
 <!-- FAILURE SIMULATION -->
+
 <section id="simulation" class="page">
 
-    <div class="card">
-        <h3>Backend Failure Simulation</h3>
+    <!-- PAGE HEADER -->
+    <div class="topbar">
+        <div>
+            <h1>Network Simulation Lab</h1>
+            <div class="subtitle">
+                Test backend failures, recovery and intelligent traffic rerouting
+            </div>
+        </div>
 
-        <p>Choose a backend and simulate a failure or restore it.</p>
+        <span class="status">
+            ● Simulation Environment Ready
+        </span>
+    </div>
 
-        <div class="control-row">
+    <!-- SIMULATION OVERVIEW -->
+    <div class="metrics">
+
+        <div class="card">
+            <div class="metric-label">Total Backends</div>
+            <div class="metric-value" id="simTotal">3</div>
+            <div class="metric-note">Available backend nodes</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Healthy Backends</div>
+            <div class="metric-value" id="simHealthy"
+                 style="color:#22c983">3</div>
+            <div class="metric-note">Operational servers</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Failed Backends</div>
+            <div class="metric-value" id="simFailed"
+                 style="color:#f05260">0</div>
+            <div class="metric-note">Simulated failures</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Simulation Events</div>
+            <div class="metric-value" id="simEvents">0</div>
+            <div class="metric-note">Actions performed this session</div>
+        </div>
+
+    </div>
+
+    <!-- SIMULATION CONTROLS -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>⚙ Simulation Controls</h3>
+
+        <p class="subtitle">
+            Select a backend server and control its availability.
+        </p>
+
+        <div class="control-row" style="margin-top:20px">
 
             <select id="simulationServer">
                 <option value="Backend-1">Backend-1</option>
@@ -630,15 +794,80 @@ td {
 
             <button class="red-btn"
                 onclick="simulateFailure('simulationServer')">
-                Simulate Failure
+                ⚠ Simulate Failure
             </button>
 
             <button class="green-btn"
                 onclick="restoreServer('simulationServer')">
-                Restore Server
+                ↻ Restore Server
             </button>
 
         </div>
+
+        <div class="metric-note" style="margin-top:15px">
+            Failure simulation changes the selected backend's health state.
+            Traffic should be routed through healthy backends.
+        </div>
+
+    </div>
+
+    <!-- BACKEND STATUS -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>▤ Backend Simulation Status</h3>
+
+        <p class="subtitle">
+            Current backend availability during simulation.
+        </p>
+
+        <div id="simulationBackendCards"
+             style="display:grid;
+                    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+                    gap:15px">
+
+            <div class="metric-note">
+                Loading backend information...
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TRAFFIC ROUTING -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>⇄ Intelligent Traffic Routing</h3>
+
+        <p class="subtitle">
+            Requests are distributed among healthy backend servers.
+        </p>
+
+        <div id="simulationRouting"
+             style="padding:18px;
+                    background:#101a2b;
+                    border:1px solid #293950;
+                    border-radius:10px">
+
+            Waiting for backend information...
+
+        </div>
+
+    </div>
+
+    <!-- SIMULATION HISTORY -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>◷ Simulation Activity History</h3>
+
+        <div id="simulationHistory"
+             style="max-height:250px;overflow-y:auto">
+
+            <p class="metric-note">
+                No simulation events recorded yet.
+            </p>
+
+        </div>
+
     </div>
 
 </section>
@@ -757,17 +986,226 @@ td {
 
 </section>
 
-<!-- SETTINGS -->
+
+<!-- SYSTEM SETTINGS -->
 <section id="settings" class="page">
 
-    <div class="card">
-        <h3>Settings</h3>
+    <!-- HEADER -->
+    <div class="topbar">
+        <div>
+            <h1>System Configuration Center</h1>
+            <div class="subtitle">
+                Monitor application configuration and system connectivity
+            </div>
+        </div>
 
-        <p>Automatic dashboard refresh interval: 3 seconds.</p>
+        <span class="status">
+            ● Configuration Active
+        </span>
+    </div>
 
-        <p>Backend API: <code>/api/lb</code></p>
+    <!-- SYSTEM OVERVIEW -->
+    <div class="metrics">
 
-        <button onclick="refreshAll()">Refresh Data Now</button>
+        <div class="card">
+            <div class="metric-label">Application Status</div>
+            <div class="metric-value" style="color:#22c983">
+                Online
+            </div>
+            <div class="metric-note">Spring Boot application</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Backend Nodes</div>
+            <div class="metric-value" id="settingsBackendCount">3</div>
+            <div class="metric-note">Registered backend servers</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Refresh Interval</div>
+            <div class="metric-value">3 sec</div>
+            <div class="metric-note">Automatic dashboard refresh</div>
+        </div>
+
+        <div class="card">
+            <div class="metric-label">Load Balancing</div>
+            <div class="metric-value" id="settingsStrategy"
+                 style="font-size:20px">
+                Round Robin
+            </div>
+            <div class="metric-note">Current selected strategy</div>
+        </div>
+
+    </div>
+
+    <!-- LOAD BALANCING CONFIGURATION -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>⚙ Load Balancing Configuration</h3>
+
+        <p class="subtitle">
+            Current request distribution configuration.
+        </p>
+
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:15px;
+            margin-top:18px;
+        ">
+
+            <div style="
+                padding:18px;
+                background:#101a2b;
+                border:1px solid #293950;
+                border-radius:10px;
+            ">
+                <div class="metric-label">Default Strategy</div>
+                <h3 style="color:#22c8e8">Round Robin</h3>
+                <p class="metric-note">
+                    Distributes requests sequentially among healthy servers.
+                </p>
+            </div>
+
+            <div style="
+                padding:18px;
+                background:#101a2b;
+                border:1px solid #293950;
+                border-radius:10px;
+            ">
+                <div class="metric-label">Alternative Strategy</div>
+                <h3 style="color:#a78bfa">Least Connections</h3>
+                <p class="metric-note">
+                    Selects the healthy backend with fewer active connections.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BACKEND CONFIGURATION -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>▤ Backend Server Configuration</h3>
+
+        <p class="subtitle">
+            Registered backend endpoints and availability.
+        </p>
+
+        <div id="settingsBackendList"
+             style="display:grid;
+                    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+                    gap:15px;
+                    margin-top:18px">
+
+            <p class="metric-note">Loading backend configuration...</p>
+
+        </div>
+
+    </div>
+
+    <!-- APPLICATION CONFIGURATION -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>◈ Application Configuration</h3>
+
+        <div style="margin-top:15px">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                padding:14px 0;
+                border-bottom:1px solid #293950;
+                gap:10px;
+            ">
+                <span class="metric-label">Application Framework</span>
+                <strong>Spring Boot</strong>
+            </div>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                padding:14px 0;
+                border-bottom:1px solid #293950;
+                gap:10px;
+            ">
+                <span class="metric-label">Programming Language</span>
+                <strong>Java 17 (Project target)</strong>
+            </div>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                padding:14px 0;
+                border-bottom:1px solid #293950;
+                gap:10px;
+            ">
+                <span class="metric-label">Backend API</span>
+                <strong>/api/lb</strong>
+            </div>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                padding:14px 0;
+                gap:10px;
+            ">
+                <span class="metric-label">Dashboard Refresh</span>
+                <strong>Every 3 seconds</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CONNECTION STATUS -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>⇄ API Connectivity</h3>
+
+        <div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:15px;
+            margin-top:15px;
+        ">
+
+            <div>
+                <strong>Load Balancer API</strong>
+                <div class="metric-note" style="margin-top:6px">
+                    /api/lb/servers
+                </div>
+
+                <div id="settingsApiStatus"
+                     style="margin-top:10px;color:#94a3b8">
+                    Checking connection...
+                </div>
+            </div>
+
+            <button onclick="checkSettingsConnection()">
+                ↻ Test API Connection
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- MANUAL REFRESH -->
+    <div class="card" style="margin-top:20px">
+
+        <h3>⟳ Data Management</h3>
+
+        <p class="subtitle">
+            Manually refresh the application dashboard data.
+        </p>
+
+        <button onclick="refreshAll()" style="margin-top:12px">
+            Refresh All System Data
+        </button>
+
     </div>
 
 </section>
@@ -798,10 +1236,14 @@ td {
 <script>
 const API = "/api/lb";
 
+let simulationHistory = [];
 let servers = [];
 let activityLogs = [];
 let responseTimes = [];
 let selectedStrategy = "round-robin";
+// Track backend health changes between dashboard refreshes
+let previousHealthStates = {};
+let initialHealthLoaded = false;
 
 const colors = [
     "#2585f5",
@@ -908,8 +1350,6 @@ function clearActivity() {
     renderActivity();
 }
 
-/* REFRESH SERVER DATA */
-
 async function refreshAll() {
 
     try {
@@ -917,6 +1357,52 @@ async function refreshAll() {
         const data = await apiFetch(`${API}/servers`);
 
         servers = Array.isArray(data) ? data : [];
+
+        // Detect backend health status changes
+        if (initialHealthLoaded) {
+
+            servers.forEach(server => {
+
+                const currentStatus = Boolean(server.healthy);
+                const previousStatus = previousHealthStates[server.name];
+
+                if (
+                    previousStatus !== undefined &&
+                    previousStatus !== currentStatus
+                ) {
+
+                    if (currentStatus) {
+
+                        const message =
+                            `RECOVERY ALERT: ${server.name} is HEALTHY again`;
+
+                        addActivity(message, "#22c983");
+                        showToast(`${server.name} recovered successfully`);
+
+                    } else {
+
+                        const message =
+                            `FAILURE ALERT: ${server.name} is UNHEALTHY`;
+
+                        addActivity(message, "#f05260");
+                        showToast(`${server.name} is DOWN! Traffic will be rerouted`);
+
+                    }
+                }
+
+                previousHealthStates[server.name] = currentStatus;
+
+            });
+
+        } else {
+
+            servers.forEach(server => {
+                previousHealthStates[server.name] =
+                    Boolean(server.healthy);
+            });
+
+            initialHealthLoaded = true;
+        }
 
         updateDashboard();
 
@@ -937,6 +1423,7 @@ async function refreshAll() {
         console.error("Server refresh error:", error);
     }
 }
+
 
 /* DASHBOARD UPDATE */
 
@@ -980,19 +1467,696 @@ function updateDashboard() {
 
     renderServers();
     renderDistribution();
+    renderHealthDashboard();
+    renderSimulationDashboard();
+    renderSettingsDashboard();
 }
 
-/* SERVER TABLE */
+/* HEALTH LATENCY HISTORY */
+
+let healthLatencyHistory = {
+    labels: [],
+    backend1: [],
+    backend2: [],
+    backend3: []
+};
+
+let healthLatencyChart = null;
+
+function updateHealthLatencyChart() {
+
+    if (typeof Chart === "undefined") {
+        console.error("Chart.js is not loaded.");
+        return;
+    }
+
+    const now = new Date().toLocaleTimeString();
+
+    healthLatencyHistory.labels.push(now);
+
+    healthLatencyHistory.backend1.push(
+        Number(servers[0]?.healthResponseTimeMs) >= 0
+            ? Number(servers[0].healthResponseTimeMs)
+            : null
+    );
+
+    healthLatencyHistory.backend2.push(
+        Number(servers[1]?.healthResponseTimeMs) >= 0
+            ? Number(servers[1].healthResponseTimeMs)
+            : null
+    );
+
+    healthLatencyHistory.backend3.push(
+        Number(servers[2]?.healthResponseTimeMs) >= 0
+            ? Number(servers[2].healthResponseTimeMs)
+            : null
+    );
+
+    if (healthLatencyHistory.labels.length > 20) {
+        Object.values(healthLatencyHistory).forEach(values => values.shift());
+    }
+
+    const ctx = document
+        .getElementById("healthLatencyChart")
+        .getContext("2d");
+
+    if (!healthLatencyChart) {
+
+        healthLatencyChart = new Chart(ctx, {
+            type: "line",
+
+            data: {
+                labels: healthLatencyHistory.labels,
+
+                datasets: [
+                    {
+                        label: "Backend-1",
+                        data: healthLatencyHistory.backend1,
+                        borderColor: "#22c983",
+                        tension: 0.4
+                    },
+                    {
+                        label: "Backend-2",
+                        data: healthLatencyHistory.backend2,
+                        borderColor: "#22c8e8",
+                        tension: 0.4
+                    },
+                    {
+                        label: "Backend-3",
+                        data: healthLatencyHistory.backend3,
+                        borderColor: "#a78bfa",
+                        tension: 0.4
+                    }
+                ]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: "#cbd5e1"
+                        }
+                    }
+                },
+
+                scales: {
+                    x: {
+                        ticks: { color: "#94a3b8" },
+                        grid: { color: "rgba(148,163,184,.08)" }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Latency (ms)",
+                            color: "#94a3b8"
+                        },
+                        ticks: { color: "#94a3b8" },
+                        grid: { color: "rgba(148,163,184,.08)" }
+                    }
+                }
+            }
+        });
+
+    } else {
+
+        healthLatencyChart.data.labels =
+            healthLatencyHistory.labels;
+
+        healthLatencyChart.data.datasets[0].data =
+            healthLatencyHistory.backend1;
+
+        healthLatencyChart.data.datasets[1].data =
+            healthLatencyHistory.backend2;
+
+        healthLatencyChart.data.datasets[2].data =
+            healthLatencyHistory.backend3;
+
+        healthLatencyChart.update("none");
+    }
+}
+
+
+/* HEALTH MONITORING DASHBOARD */
+
+function renderHealthDashboard() {
+
+    const total = servers.length;
+
+    const healthy = servers.filter(
+        server => Boolean(server.healthy)
+    ).length;
+
+    const unhealthy = total - healthy;
+
+    const availability = total
+        ? Math.round((healthy / total) * 100)
+        : 0;
+
+    document.getElementById("healthTotal").textContent = total;
+
+    document.getElementById("healthHealthy").textContent = healthy;
+
+    document.getElementById("healthUnhealthy").textContent = unhealthy;
+
+    document.getElementById("healthAvailability").textContent =
+        availability + "%";
+
+    const overallText = document.getElementById("overallHealthText");
+    const overallDescription = document.getElementById("overallHealthDescription");
+    const overallIndicator = document.querySelector(
+        "#overallHealth > span"
+    );
+
+    if (total === 0) {
+
+        overallText.textContent = "Waiting for server data...";
+        overallDescription.textContent = "No backend information available.";
+        overallIndicator.style.color = "#94a3b8";
+
+    } else if (healthy === total) {
+
+        overallText.textContent = "All Systems Operational";
+        overallDescription.textContent =
+            `${healthy} of ${total} backend servers are healthy.`;
+
+        overallIndicator.style.color = "#22c983";
+
+    } else if (healthy === 0) {
+
+        overallText.textContent = "Critical System Status";
+        overallDescription.textContent =
+            "All backend servers are currently unhealthy.";
+
+        overallIndicator.style.color = "#f05260";
+
+    } else {
+
+        overallText.textContent = "Partial System Availability";
+        overallDescription.textContent =
+            `${healthy} healthy and ${unhealthy} unhealthy backend server(s).`;
+
+        overallIndicator.style.color = "#f59e0b";
+    }
+
+    const cards = document.getElementById("healthServerCards");
+
+    if (total === 0) {
+        cards.innerHTML = `
+            <div class="metric-note">No backend servers found.</div>
+        `;
+        return;
+    }
+
+    cards.innerHTML = servers.map(server => {
+
+        const isHealthy = Boolean(server.healthy);
+
+        const latency = Number(server.healthResponseTimeMs);
+
+        const latencyText = Number.isFinite(latency) && latency >= 0
+            ? latency.toFixed(2) + " ms"
+            : "Checking...";
+
+        const lastChecked =
+            server.lastHealthCheckAt &&
+            server.lastHealthCheckAt !== "Not checked"
+                ? new Date(server.lastHealthCheckAt).toLocaleString()
+                : "Waiting for first check";
+
+        const statusColor = isHealthy ? "#22c983" : "#f05260";
+
+        return `
+            <div style="
+                background:#101a2b;
+                border:1px solid #293950;
+                border-radius:12px;
+                padding:20px;
+            ">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:10px;
+                ">
+
+                    <strong>${escapeHtml(server.name)}</strong>
+
+                    <span style="
+                        color:${statusColor};
+                        background:${isHealthy
+                            ? "rgba(34,201,131,.12)"
+                            : "rgba(240,82,96,.12)"};
+                        padding:6px 10px;
+                        border-radius:20px;
+                        font-size:12px;
+                    ">
+                        ● ${isHealthy ? "Healthy" : "Unhealthy"}
+                    </span>
+
+                </div>
+
+                <p style="
+                    color:#94a3b8;
+                    font-size:12px;
+                    overflow-wrap:anywhere;
+                ">
+                    ${escapeHtml(server.url || "")}
+                </p>
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-top:22px;
+                ">
+                    <span class="metric-label">Health Latency</span>
+                    <strong style="color:#22c8e8">
+                        ${latencyText}
+                    </strong>
+                </div>
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-top:15px;
+                ">
+                    <span class="metric-label">Requests</span>
+                    <strong>${Number(server.requestCount || 0)}</strong>
+                </div>
+
+                <div style="
+                    margin-top:15px;
+                    padding-top:12px;
+                    border-top:1px solid #293950;
+                ">
+                    <div class="metric-label">Last Health Check</div>
+                    <div style="font-size:12px;margin-top:6px;color:#94a3b8">
+                        ${escapeHtml(lastChecked)}
+                    </div>
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+    updateHealthLatencyChart();
+}
+
+/* NETWORK SIMULATION DASHBOARD */
+
+function renderSimulationDashboard() {
+
+    const total = servers.length;
+
+    const healthyServers = servers.filter(
+        server => Boolean(server.healthy)
+    );
+
+    const unhealthyServers = servers.filter(
+        server => !server.healthy
+    );
+
+    // Overview counters
+    document.getElementById("simTotal").textContent = total;
+
+    document.getElementById("simHealthy").textContent =
+        healthyServers.length;
+
+    document.getElementById("simFailed").textContent =
+        unhealthyServers.length;
+
+    document.getElementById("simEvents").textContent =
+        simulationHistory.length;
+
+    // Backend cards
+    const cards = document.getElementById(
+        "simulationBackendCards"
+    );
+
+    cards.innerHTML = servers.map(server => {
+
+        const healthy = Boolean(server.healthy);
+
+        const latency = Number(server.healthResponseTimeMs);
+
+        const latencyText =
+            Number.isFinite(latency) && latency >= 0
+                ? latency.toFixed(2) + " ms"
+                : "Checking...";
+
+        return `
+            <div style="
+                background:#101a2b;
+                border:1px solid #293950;
+                border-radius:12px;
+                padding:18px;
+            ">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:8px;
+                ">
+                    <strong>${escapeHtml(server.name)}</strong>
+
+                    <span style="
+                        color:${healthy ? "#22c983" : "#f05260"};
+                        font-size:12px;
+                    ">
+                        ● ${healthy ? "Healthy" : "Unhealthy"}
+                    </span>
+                </div>
+
+                <div class="metric-label" style="margin-top:20px">
+                    Health Latency
+                </div>
+
+                <strong style="color:#22c8e8">
+                    ${latencyText}
+                </strong>
+
+                <div class="metric-label" style="margin-top:12px">
+                    Total Requests
+                </div>
+
+                <strong>${Number(server.requestCount || 0)}</strong>
+
+                <div style="
+                    height:5px;
+                    background:#293950;
+                    border-radius:10px;
+                    margin-top:15px;
+                    overflow:hidden;
+                ">
+                    <div style="
+                        height:100%;
+                        width:${healthy ? "100%" : "0%"};
+                        background:${healthy ? "#22c983" : "#f05260"};
+                    "></div>
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+
+    // Intelligent traffic routing
+    const routing = document.getElementById(
+        "simulationRouting"
+    );
+
+    if (healthyServers.length === 0) {
+
+        routing.innerHTML = `
+            <div style="color:#f05260">
+                ⚠ Critical: No healthy backend servers available.
+                Traffic cannot be routed.
+            </div>
+        `;
+
+    } else {
+
+        routing.innerHTML = `
+            <div style="
+                text-align:center;
+                margin-bottom:18px;
+                color:#22c8e8;
+                font-weight:bold;
+            ">
+                CLIENT REQUESTS
+                <div style="font-size:22px;margin-top:5px">↓</div>
+                INTELLIGENT LOAD BALANCER
+                <div style="font-size:22px;margin-top:5px">↓</div>
+            </div>
+
+            <div style="
+                display:grid;
+                grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+                gap:12px;
+            ">
+                ${servers.map(server => {
+
+                    const healthy = Boolean(server.healthy);
+
+                    return `
+                        <div style="
+                            text-align:center;
+                            padding:15px 8px;
+                            border-radius:9px;
+                            background:${healthy
+                                ? "rgba(34,201,131,.10)"
+                                : "rgba(240,82,96,.10)"};
+                            border:1px solid ${healthy
+                                ? "#22c983"
+                                : "#f05260"};
+                        ">
+                            <strong>${escapeHtml(server.name)}</strong>
+
+                            <div style="
+                                margin-top:8px;
+                                color:${healthy ? "#22c983" : "#f05260"};
+                                font-size:12px;
+                            ">
+                                ${healthy
+                                    ? "✓ Receiving traffic"
+                                    : "✕ Traffic excluded"}
+                            </div>
+                        </div>
+                    `;
+
+                }).join("")}
+            </div>
+
+            <p style="
+                text-align:center;
+                margin:18px 0 0;
+                color:#22c983;
+                font-size:13px;
+            ">
+                ${healthyServers.length} healthy backend(s) available for routing
+            </p>
+        `;
+    }
+
+    // Simulation activity history
+    const history = document.getElementById(
+        "simulationHistory"
+    );
+
+    if (simulationHistory.length === 0) {
+
+        history.innerHTML = `
+            <p class="metric-note">
+                No simulation events recorded yet.
+            </p>
+        `;
+
+    } else {
+
+        history.innerHTML = simulationHistory
+            .slice()
+            .reverse()
+            .map(event => `
+                <div style="
+                    padding:12px;
+                    border-bottom:1px solid #293950;
+                    display:flex;
+                    justify-content:space-between;
+                    gap:10px;
+                ">
+                    <span style="color:${event.color}">
+                        ● ${escapeHtml(event.message)}
+                    </span>
+
+                    <span class="metric-note">
+                        ${escapeHtml(event.time)}
+                    </span>
+                </div>
+            `).join("");
+    }
+
+/* SETTINGS DASHBOARD */
+
+function renderSettingsDashboard() {
+
+    const countElement =
+        document.getElementById("settingsBackendCount");
+
+    const strategyElement =
+        document.getElementById("settingsStrategy");
+
+    const container =
+        document.getElementById("settingsBackendList");
+
+    if (!countElement || !strategyElement || !container) {
+        return;
+    }
+
+    // Total backend servers
+    countElement.textContent = servers.length;
+
+    // Current load balancing strategy
+    strategyElement.textContent =
+        selectedStrategy === "least-connections"
+            ? "Least Connections"
+            : "Round Robin";
+
+    // Backend configuration
+    if (servers.length === 0) {
+
+        container.innerHTML =
+            '<p class="metric-note">No backend servers available.</p>';
+
+        return;
+    }
+
+    container.innerHTML = servers.map(server => {
+
+        const healthy = Boolean(server.healthy);
+
+        return `
+            <div style="
+                background:#101a2b;
+                border:1px solid #293950;
+                border-radius:10px;
+                padding:18px;
+            ">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:8px;
+                ">
+
+                    <strong>${escapeHtml(server.name)}</strong>
+
+                    <span style="
+                        color:${healthy ? "#22c983" : "#f05260"};
+                        font-size:12px;
+                    ">
+                        ● ${healthy ? "Online" : "Offline"}
+                    </span>
+
+                </div>
+
+                <p style="
+                    color:#94a3b8;
+                    font-size:12px;
+                    overflow-wrap:anywhere;
+                    margin-top:12px;
+                ">
+                    ${escapeHtml(server.url || "")}
+                </p>
+
+                <div class="metric-label">
+                    Requests: ${Number(server.requestCount || 0)}
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+}
+function renderSettingsDashboard() {
+    const countElement = document.getElementById("settingsBackendCount");
+    const strategyElement = document.getElementById("settingsStrategy");
+    const container = document.getElementById("settingsBackendList");
+
+    if (!countElement || !strategyElement || !container) return;
+
+    // Update overview
+    countElement.textContent = servers.length;
+
+    strategyElement.textContent =
+        selectedStrategy === "least-connections"
+            ? "Least Connections"
+            : "Round Robin";
+
+    // Handle empty server list
+    if (!servers.length) {
+        container.innerHTML =
+            '<p class="metric-note">No backend servers available.</p>';
+        return;
+    }
+
+    // Render backend configuration cards
+    container.innerHTML = servers.map(server => {
+        const healthy = Boolean(server.healthy);
+
+        return `
+            <div style="
+                background:#101a2b;
+                border:1px solid #293950;
+                border-radius:10px;
+                padding:18px;
+                margin-bottom:12px;
+            ">
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:8px;
+                ">
+                    <strong>${escapeHtml(server.name)}</strong>
+
+                    <span style="
+                        color:${healthy ? "#22c983" : "#f05260"};
+                        font-size:12px;
+                    ">
+                        ● ${healthy ? "Online" : "Offline"}
+                    </span>
+                </div>
+
+                <p style="
+                    color:#94a3b8;
+                    font-size:12px;
+                    overflow-wrap:anywhere;
+                    margin-top:12px;
+                ">
+                    ${escapeHtml(server.url || "")}
+                </p>
+
+                <div class="metric-label">
+                    Requests: ${Number(server.requestCount || 0)}
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
 
 function renderServers() {
 
     const table = document.getElementById("serverTable");
 
-    table.innerHTML = servers.map(server => {
+    const rows = servers.map(server => {
 
         const healthy = Boolean(server.healthy);
         const count = Number(server.requestCount || 0);
         const connections = Number(server.activeConnections || 0);
+
+        const latency = Number(server.healthResponseTimeMs);
+        const latencyText = latency >= 0
+            ? `${latency.toFixed(2)} ms`
+            : "Checking...";
+
+        const lastChecked = server.lastHealthCheckAt &&
+            server.lastHealthCheckAt !== "Not checked"
+            ? new Date(server.lastHealthCheckAt).toLocaleTimeString()
+            : "Waiting...";
 
         return `
             <tr>
@@ -1013,11 +2177,28 @@ function renderServers() {
                 </td>
 
                 <td>${count}</td>
+
                 <td>${connections}</td>
+
+                <td>
+                    <strong style="color:${latency >= 0 && latency < 100
+                        ? '#22c55e'
+                        : latency >= 100 ? '#f59e0b' : '#94a3b8'}">
+                        ${latencyText}
+                    </strong>
+                </td>
+
+                <td>
+                    <span style="color:#94a3b8;font-size:12px">
+                        ${escapeHtml(lastChecked)}
+                    </span>
+                </td>
             </tr>
         `;
 
     }).join("");
+
+    table.innerHTML = rows;
 
     document.getElementById("serversDetails").innerHTML = `
         <div style="overflow-x:auto">
@@ -1027,15 +2208,18 @@ function renderServers() {
                         <th>Server</th>
                         <th>Status</th>
                         <th>Requests</th>
-                        <th>Connections</th>
+                        <th>Active Connections</th>
+                        <th>Health Latency</th>
+                        <th>Last Checked</th>
                     </tr>
                 </thead>
 
-                <tbody>${table.innerHTML}</tbody>
+                <tbody>${rows}</tbody>
             </table>
         </div>
     `;
 }
+
 
 /* REQUEST DISTRIBUTION */
 
@@ -1171,6 +2355,24 @@ async function changeStrategy() {
 
 /* FAILURE SIMULATION */
 
+
+/* RECORD SIMULATION EVENT */
+
+function recordSimulationEvent(message, color) {
+
+    simulationHistory.push({
+        message: message,
+        color: color,
+        time: new Date().toLocaleTimeString()
+    });
+
+    if (simulationHistory.length > 30) {
+        simulationHistory.shift();
+    }
+}
+
+/* SIMULATE FAILURE */
+
 async function simulateFailure(selectId = "serverSelect") {
 
     const serverName =
@@ -1180,7 +2382,12 @@ async function simulateFailure(selectId = "serverSelect") {
 
         await apiFetch(
             `${API}/servers/${encodeURIComponent(serverName)}/simulate?healthy=false`,
-            { method:"POST" }
+            { method: "POST" }
+        );
+
+        recordSimulationEvent(
+            `${serverName} failure simulated`,
+            "#f05260"
         );
 
         addActivity(
@@ -1209,7 +2416,12 @@ async function restoreServer(selectId = "serverSelect") {
 
         await apiFetch(
             `${API}/servers/${encodeURIComponent(serverName)}/simulate?healthy=true`,
-            { method:"POST" }
+            { method: "POST" }
+        );
+
+        recordSimulationEvent(
+            `${serverName} restored successfully`,
+            "#22c983"
         );
 
         addActivity(
@@ -1229,29 +2441,75 @@ async function restoreServer(selectId = "serverSelect") {
 
 /* HEALTH CHECK */
 
+/* MANUAL HEALTH CHECK */
+
 async function runHealthCheck() {
+
+    const resultElement = document.getElementById("healthResult");
+
+    resultElement.textContent = "Running health check...";
 
     try {
 
-        const result = await apiFetch(
-            `${API}/health-check`
-        );
+        await apiFetch(`${API}/health-check`);
 
-        document.getElementById("healthResult").innerHTML =
-            `<pre style="white-space:pre-wrap;overflow:auto">${escapeHtml(
-                JSON.stringify(result, null, 2)
-            )}</pre>`;
-
-        addActivity("Health check completed", "#22c983");
-
+        // Fetch the latest backend information
         await refreshAll();
+
+        resultElement.innerHTML = `
+            <div style="
+                color:#22c983;
+                padding:12px;
+                background:rgba(34,201,131,.08);
+                border-radius:8px;
+            ">
+                ✓ Health check completed successfully.
+                <div class="metric-note" style="margin-top:6px">
+                    Backend status and response latency have been refreshed.
+                </div>
+            </div>
+        `;
+
+        addActivity("Manual health check completed", "#22c983");
 
     } catch (error) {
 
-        document.getElementById("healthResult").textContent =
-            error.message;
+        resultElement.textContent =
+            "Health check failed: " + error.message;
+
+        addActivity("Health check failed", "#f05260");
     }
 }
+
+/* SETTINGS API CONNECTION TEST */
+
+async function checkSettingsConnection() {
+
+    const statusElement =
+        document.getElementById("settingsApiStatus");
+
+    statusElement.textContent = "Checking API connection...";
+    statusElement.style.color = "#f59e0b";
+
+    try {
+
+        await apiFetch(`${API}/servers`);
+
+        statusElement.textContent =
+            "● Connected — Load Balancer API is responding";
+
+        statusElement.style.color = "#22c983";
+
+    } catch (error) {
+
+        statusElement.textContent =
+            "● Connection failed — " + error.message;
+
+        statusElement.style.color = "#f05260";
+    }
+}
+
+
 
 /* TRAFFIC ANALYTICS */
 

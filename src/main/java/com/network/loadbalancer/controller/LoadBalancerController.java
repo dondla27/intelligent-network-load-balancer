@@ -88,21 +88,28 @@ public class LoadBalancerController {
                         "attempted", attempted));
     }
 
-    @GetMapping("/servers")
-    public List<Map<String, Object>> servers() {
+    
+@GetMapping("/servers")
+public List<Map<String, Object>> servers() {
 
-        return service.getServers().stream().map(server -> {
-            Map<String, Object> result = new LinkedHashMap<>();
+    return service.getServers().stream().map(server -> {
+        Map<String, Object> result = new LinkedHashMap<>();
 
-            result.put("name", server.getName());
-            result.put("url", server.getUrl());
-            result.put("healthy", server.isHealthy());
-            result.put("requestCount", server.getRequestCount());
-            result.put("activeConnections", server.getActiveConnections());
+        result.put("name", server.getName());
+        result.put("url", server.getUrl());
+        result.put("healthy", server.isHealthy());
+        result.put("requestCount", server.getRequestCount());
+        result.put("activeConnections", server.getActiveConnections());
 
-            return result;
-        }).toList();
-    }
+        // Automatic health monitoring details
+        result.put("healthResponseTimeMs", server.getHealthResponseTimeMs());
+        result.put("lastHealthCheckAt", server.getLastHealthCheckAt());
+
+        return result;
+    }).toList();
+}
+
+    
 
     @GetMapping("/health-check")
     public List<Map<String, Object>> healthCheck() {
